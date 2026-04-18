@@ -26,7 +26,7 @@ Tasks feel too big, too fuzzy, too boring, or too emotionally loaded to begin. S
 - works for study, work, cleaning, exercise, reading, routines, creative work, and general restart days
 - breaks goals into smaller moves
 - logs completions with XP and supportive feedback
-- lets you edit or remove tracks without leaving the board
+- track editing and removal without leaving the board
 - supports local JSON export and import
 - shows progress bars, levels, weekly wins, momentum trend, and a consistency map
 - keeps everything in browser storage
@@ -44,42 +44,29 @@ This split is intentional. GitHub Pages is static hosting, so the public app sta
 
 ## Local development
 
-1. Generate the starter-kit data:
+Typical local workflow:
 
-   ```bash
-   python scripts/build_site.py
-   ```
+```bash
+python scripts/build_site.py
+python -m unittest discover -s tests
+python -m http.server 8000 --directory docs
+```
 
-2. Run the Python tests:
+Local app URL: [http://localhost:8000](http://localhost:8000)
 
-   ```bash
-   python -m unittest discover -s tests
-   ```
+## GitHub Pages
 
-3. Serve the static app locally:
+Deployment lives in `.github/workflows/pages.yml`.
 
-   ```bash
-   python -m http.server 8000 --directory docs
-   ```
+The repository is set up for GitHub Pages via GitHub Actions:
 
-4. Open [http://localhost:8000](http://localhost:8000)
+- `python scripts/build_site.py` generates the static data
+- `docs/` is uploaded as the Pages artifact
+- pushes to `main` trigger a new deploy
 
-## Deploying to GitHub Pages
+Repository setting required once:
 
-The repository includes `.github/workflows/pages.yml`.
-
-To deploy:
-
-1. Push the repo to GitHub.
-2. In the repository settings, open `Pages`.
-3. Set the source to `GitHub Actions`.
-4. Push to `main`.
-
-The workflow will:
-
-- run `python scripts/build_site.py`
-- upload the `docs/` directory as the Pages artifact
-- publish the static site
+- `Settings -> Pages -> Source -> GitHub Actions`
 
 ## Project structure
 
@@ -136,9 +123,9 @@ Placeholder for:
 
 ## Contributing
 
-Issues, refinements, and thoughtful product feedback are welcome.
+Issues, refinements, and thoughtful product feedback help keep the project sharp.
 
-If you want to contribute, try to keep the same product tone:
+The same product tone applies across code, copy, and interaction design:
 
 - practical over theatrical
 - supportive over guilt-driven

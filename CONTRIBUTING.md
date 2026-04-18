@@ -1,10 +1,8 @@
 # Contributing
 
-Thanks for taking a look at Small Wins.
-
 This project is intentionally modest in scope. The goal is not to build a bloated productivity suite. The goal is to make avoided work feel lighter, clearer, and easier to return to.
 
-## Before you open a pull request
+## Pull Request Guidelines
 
 - keep the product practical and emotionally supportive
 - avoid guilt-driven copy and punitive mechanics
@@ -31,5 +29,4 @@ python -m http.server 8000 --directory docs
 
 Small, focused pull requests are easiest to review and keep the product coherent.
 
-If you change copy or interaction design, explain the product reason, not just the code change.
-
+Changes to copy or interaction design should include the product reason, not only the code change.
