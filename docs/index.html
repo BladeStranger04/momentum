@@ -4,11 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Small Wins</title>
-    <meta
-      name="description"
-      content="Turn almost any hard-to-start activity into a lighter system of momentum, milestones, and satisfying progress."
-    >
-    <meta name="theme-color" content="#f6efe5">
+    <meta name="description" content="">
+    <meta name="theme-color" content="#f4efe8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -21,80 +18,100 @@
   <body>
     <div class="page-glow" aria-hidden="true"></div>
     <main class="app-shell">
-      <header class="hero panel">
-        <div class="hero__copy">
-          <p class="eyebrow">small wins</p>
-          <h1>make hard things easier to start</h1>
-          <p class="hero__lede">
-            Turn study, chores, workouts, routines, and long projects into lighter tracks with
-            momentum, milestones, and progress you can actually feel.
-          </p>
-          <div class="hero__actions">
-            <button class="button button--primary" id="heroStartButton" type="button">build my first track</button>
-            <button class="button button--ghost" id="loadDemoButton" type="button">explore sample board</button>
+      <header class="app-topbar panel">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div class="brand-copy">
+            <strong>Small Wins</strong>
           </div>
-          <ul class="hero__points">
-            <li>reward starting, not just finishing</li>
-            <li>keep momentum without shame resets</li>
-            <li>works for goals, habits, routines, tasks, and projects</li>
-          </ul>
         </div>
-        <div class="hero__preview">
-          <article class="preview-card preview-card--focus">
-            <span class="preview-card__label">today's read</span>
-            <strong id="previewHeadline">one easy win can change the temperature of the day</strong>
-            <div class="preview-meter">
-              <span id="previewMeterFill"></span>
-            </div>
-            <p id="previewBody">missed time does not erase momentum. coming back still counts.</p>
-          </article>
-          <article class="preview-card preview-card--mini">
-            <div class="mini-stat">
-              <span>mode</span>
-              <strong>focus</strong>
-            </div>
-            <div class="mini-stat">
-              <span>reward</span>
-              <strong>start bonus</strong>
-            </div>
-            <div class="mini-stat">
-              <span>view</span>
-              <strong>weekly wins</strong>
-            </div>
-          </article>
+        <div class="topbar-controls">
+          <div class="segmented" id="languageToggle" aria-label="Language"></div>
+          <label class="theme-field">
+            <span id="themeFieldLabel"></span>
+            <select id="themeSelect"></select>
+          </label>
         </div>
       </header>
 
+      <section class="panel start-panel">
+        <div class="start-panel__head">
+          <p class="section-kicker" id="startKicker"></p>
+          <h1 id="startTitle"></h1>
+          <p class="start-panel__subtitle" id="startSubtitle"></p>
+        </div>
+
+        <form class="quick-start" id="quickStartForm">
+          <label class="quick-input">
+            <span id="quickInputLabel"></span>
+            <input id="quickTrackTitle" name="quickTitle" maxlength="70" type="text">
+          </label>
+
+          <div class="start-options">
+            <section class="option-group">
+              <div class="option-group__head">
+                <span id="quickModeLabel"></span>
+              </div>
+              <div class="choice-row" id="quickModeRow"></div>
+            </section>
+
+            <section class="option-group">
+              <div class="option-group__head">
+                <span id="quickCategoryLabel"></span>
+              </div>
+              <div class="choice-row" id="quickCategoryRow"></div>
+            </section>
+
+            <section class="option-group option-group--wide">
+              <div class="option-group__head">
+                <span id="quickSuggestionLabel"></span>
+              </div>
+              <div class="suggestion-row" id="quickSuggestionRow"></div>
+            </section>
+          </div>
+
+          <div class="quick-actions">
+            <button class="button button--primary" id="quickCreateButton" type="submit"></button>
+            <button class="button button--ghost" id="loadDemoButton" type="button"></button>
+          </div>
+        </form>
+      </section>
+
+      <section class="quote-row" id="quoteSection">
+        <article class="panel quote-card">
+          <div class="quote-card__head">
+            <p class="section-kicker" id="quoteKicker"></p>
+            <button class="quiet-button" id="hideQuoteButton" type="button"></button>
+          </div>
+          <blockquote class="quote-card__text" id="quoteText"></blockquote>
+          <p class="quote-card__source" id="quoteSource"></p>
+        </article>
+      </section>
+
       <section class="summary-row" id="summaryRow"></section>
 
-      <section class="main-grid">
+      <section class="main-grid" id="workspaceGrid">
         <section class="panel board-panel">
           <div class="section-heading">
             <div>
-              <p class="section-kicker">dashboard</p>
-              <h2>your tracks</h2>
+              <p class="section-kicker" id="boardKicker"></p>
+              <h2 id="boardTitle"></h2>
             </div>
-            <div class="board-actions">
-              <button class="button button--secondary" id="newTrackButton" type="button">new track</button>
-            </div>
+            <button class="button button--secondary" id="newTrackButton" type="button"></button>
           </div>
-          <div class="empty-state" id="boardEmpty">
-            <h3>Start with the smallest version that feels honest.</h3>
-            <p>
-              Pick one thing you keep avoiding. We'll turn it into clearer moves, visible progress,
-              and a dashboard that's nicer to return to.
-            </p>
-            <button class="button button--primary" id="emptyStateButton" type="button">create a track</button>
+          <div class="board-empty" id="boardEmpty">
+            <h3 id="boardEmptyTitle"></h3>
+            <p id="boardEmptyBody"></p>
           </div>
           <div class="tracks-grid" id="tracksGrid"></div>
         </section>
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
           <section class="panel daily-panel">
-            <div class="section-heading">
+            <div class="section-heading section-heading--tight">
               <div>
-                <p class="section-kicker">today</p>
-                <h2>your next easy wins</h2>
+                <p class="section-kicker" id="dailyKicker"></p>
+                <h2 id="dailyTitle"></h2>
               </div>
             </div>
             <div class="daily-brief" id="dailyBrief"></div>
@@ -102,10 +119,10 @@
           </section>
 
           <section class="panel feed-panel">
-            <div class="section-heading">
+            <div class="section-heading section-heading--tight">
               <div>
-                <p class="section-kicker">recent wins</p>
-                <h2>activity</h2>
+                <p class="section-kicker" id="activityKicker"></p>
+                <h2 id="activityTitle"></h2>
               </div>
             </div>
             <div class="activity-feed" id="activityFeed"></div>
@@ -113,12 +130,12 @@
         </aside>
       </section>
 
-      <section class="analytics-grid">
+      <section class="analytics-grid" id="analyticsGrid">
         <section class="panel chart-panel">
           <div class="section-heading section-heading--tight">
             <div>
-              <p class="section-kicker">analytics</p>
-              <h2>weekly wins</h2>
+              <p class="section-kicker" id="analyticsKickerOne"></p>
+              <h2 id="weeklyChartTitle"></h2>
             </div>
           </div>
           <div id="weeklyWinsChart" class="chart-host"></div>
@@ -127,8 +144,8 @@
         <section class="panel chart-panel">
           <div class="section-heading section-heading--tight">
             <div>
-              <p class="section-kicker">analytics</p>
-              <h2>momentum trend</h2>
+              <p class="section-kicker" id="analyticsKickerTwo"></p>
+              <h2 id="momentumChartTitle"></h2>
             </div>
           </div>
           <div id="momentumChart" class="chart-host"></div>
@@ -137,46 +154,48 @@
         <section class="panel chart-panel">
           <div class="section-heading section-heading--tight">
             <div>
-              <p class="section-kicker">analytics</p>
-              <h2>consistency map</h2>
+              <p class="section-kicker" id="analyticsKickerThree"></p>
+              <h2 id="heatmapChartTitle"></h2>
             </div>
           </div>
           <div id="heatmapChart" class="chart-host"></div>
         </section>
       </section>
 
-      <section class="panel kits-panel">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">starter kits</p>
-            <h2>built for real life, not one niche</h2>
-          </div>
-        </div>
-        <div class="kit-grid" id="starterKitGrid"></div>
-      </section>
-
       <section class="panel tools-panel">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">local tools</p>
-            <h2>your data stays in this browser</h2>
+            <p class="section-kicker" id="toolsKicker"></p>
+            <h2 id="toolsTitle"></h2>
           </div>
         </div>
         <div class="tools-grid">
           <article class="tool-card">
-            <strong>export a backup</strong>
-            <p>Download your current board as a JSON file before switching devices or trying a clean reset.</p>
-            <button class="button button--secondary" id="exportDataButton" type="button">export data</button>
+            <strong id="reflectionToolTitle"></strong>
+            <p id="reflectionToolBody"></p>
+            <label class="tool-select">
+              <span id="quoteStyleLabel"></span>
+              <select id="quoteStyleSelect"></select>
+            </label>
+            <button class="button button--secondary" id="toggleQuoteButton" type="button"></button>
           </article>
+
           <article class="tool-card">
-            <strong>import an existing board</strong>
-            <p>Restore a previous backup and keep working without needing an account or server.</p>
-            <button class="button button--ghost" id="importDataButton" type="button">import data</button>
+            <strong id="exportTitle"></strong>
+            <p id="exportBody"></p>
+            <button class="button button--secondary" id="exportDataButton" type="button"></button>
           </article>
+
           <article class="tool-card">
-            <strong>start fresh</strong>
-            <p>Clear the local board if you want to begin again from a clean slate.</p>
-            <button class="button button--danger" id="resetDataButton" type="button">clear local board</button>
+            <strong id="importTitle"></strong>
+            <p id="importBody"></p>
+            <button class="button button--ghost" id="importDataButton" type="button"></button>
+          </article>
+
+          <article class="tool-card">
+            <strong id="resetTitle"></strong>
+            <p id="resetBody"></p>
+            <button class="button button--danger" id="resetDataButton" type="button"></button>
           </article>
         </div>
         <input class="visually-hidden" id="importFileInput" type="file" accept="application/json">
@@ -184,100 +203,86 @@
     </main>
 
     <dialog class="track-dialog" id="trackDialog">
-      <form method="dialog" class="dialog-frame">
-        <button class="dialog-close" type="submit" value="cancel" aria-label="close">close</button>
+      <form method="dialog" class="dialog-close-row">
+        <button class="quiet-button" id="dialogCloseButton" type="submit" value="cancel"></button>
       </form>
+
       <form class="track-form" id="trackForm">
         <input id="trackId" name="trackId" type="hidden">
+
         <div class="dialog-copy">
-          <p class="section-kicker">setup</p>
-          <h2 id="dialogTitle">build your first track</h2>
-          <p id="dialogBody">
-            Make the first version light. You can always raise the bar later after the system feels good to use.
-          </p>
+          <p class="section-kicker" id="dialogKicker"></p>
+          <h2 id="dialogTitle"></h2>
+          <p id="dialogBody"></p>
         </div>
 
         <label class="field">
-          <span>what are you trying to move forward?</span>
-          <input
-            id="trackTitle"
-            name="title"
-            maxlength="70"
-            placeholder="Finish the material that's been hanging over me"
-            required
-          >
+          <span id="trackTitleLabel"></span>
+          <input id="trackTitle" name="title" maxlength="70" required>
         </label>
 
         <div class="field-row">
           <label class="field">
-            <span>category</span>
+            <span id="trackCategoryLabel"></span>
             <select id="trackCategory" name="category"></select>
           </label>
+
           <label class="field">
-            <span>target</span>
+            <span id="targetValueLabel"></span>
             <input id="targetValue" name="targetValue" type="number" min="1" max="100" value="10" required>
           </label>
+
           <label class="field">
-            <span>unit label</span>
-            <input id="unitLabel" name="unitLabel" maxlength="30" placeholder="study blocks" required>
+            <span id="unitLabelLabel"></span>
+            <input id="unitLabel" name="unitLabel" maxlength="30" required>
           </label>
         </div>
 
         <fieldset class="mode-picker">
-          <legend>choose a play style</legend>
+          <legend id="dialogModeLegend"></legend>
+
           <label class="mode-card">
             <input type="radio" name="mode" value="focus" checked>
-            <strong>focus</strong>
-            <span>repeatable blocks for sessions, reps, and deep work</span>
+            <strong id="dialogModeFocusLabel"></strong>
+            <span id="dialogModeFocusNote"></span>
           </label>
+
           <label class="mode-card">
             <input type="radio" name="mode" value="momentum">
-            <strong>momentum</strong>
-            <span>gentle consistency for habits and routines</span>
+            <strong id="dialogModeMomentumLabel"></strong>
+            <span id="dialogModeMomentumNote"></span>
           </label>
+
           <label class="mode-card">
             <input type="radio" name="mode" value="milestone">
-            <strong>milestone</strong>
-            <span>clear checklist progress for projects, tasks, and resets</span>
+            <strong id="dialogModeMilestoneLabel"></strong>
+            <span id="dialogModeMilestoneNote"></span>
           </label>
         </fieldset>
 
-        <p class="mode-note" id="modeNote">
-          Focus and Momentum tracks keep moves reusable. Milestone tracks treat each move like a satisfying checklist item.
-        </p>
+        <p class="mode-note" id="modeNote"></p>
 
         <label class="field">
-          <span>why does this matter right now?</span>
-          <textarea
-            id="trackWhy"
-            name="why"
-            rows="2"
-            maxlength="140"
-            placeholder="Because the stress mostly comes from not starting."
-          ></textarea>
+          <span id="trackWhyLabel"></span>
+          <textarea id="trackWhy" name="why" rows="2" maxlength="140"></textarea>
         </label>
 
         <label class="field">
-          <span>break it into lighter moves</span>
-          <textarea
-            id="stepList"
-            name="steps"
-            rows="5"
-            placeholder="one move per line"
-          ></textarea>
+          <span id="stepListLabel"></span>
+          <textarea id="stepList" name="steps" rows="5"></textarea>
         </label>
 
         <div class="suggestion-wrap">
           <div class="suggestion-wrap__head">
-            <span>starter suggestions</span>
-            <button class="button-link" id="fillSuggestionsButton" type="button">fill from this kit</button>
+            <span id="dialogSuggestionLabel"></span>
+            <button class="button-link" id="fillSuggestionsButton" type="button"></button>
           </div>
-          <div class="suggestion-chips" id="suggestionChips"></div>
+          <div class="suggestion-row" id="suggestionChips"></div>
         </div>
 
         <div class="dialog-actions">
-          <button class="button button--ghost" id="cancelDialogButton" type="button">cancel</button>
-          <button class="button button--primary" type="submit">save track</button>
+          <button class="button button--ghost" id="cancelDialogButton" type="button"></button>
+          <button class="button button--primary" id="saveTrackButton" type="submit"></button>
         </div>
       </form>
     </dialog>

@@ -4,6 +4,8 @@ Small Wins is a static, supportive progress app for people who procrastinate on 
 
 Instead of treating everything like a rigid to-do list, it turns goals into lighter tracks with repeatable moves, momentum, milestones, XP, and visual feedback. The point is not to gamify life for its own sake. The point is to make starting easier, progress clearer, and returning after a gap feel normal instead of shameful.
 
+Live demo: [bladestranger04.github.io/small-wins](https://bladestranger04.github.io/small-wins/)
+
 ## Why this exists
 
 A lot of procrastination is not laziness. It is friction.
@@ -16,8 +18,11 @@ Tasks feel too big, too fuzzy, too boring, or too emotionally loaded to begin. S
 
 ## What the MVP does
 
-- quick onboarding into a first track
+- app-first quick start into a first track
 - three play styles: Focus, Momentum, Milestone
+- four built-in themes with local persistence
+- English and Russian UI
+- optional daily reflection with general, reflective, and bible-inspired modes
 - works for study, work, cleaning, exercise, reading, routines, creative work, and general restart days
 - breaks goals into smaller moves
 - logs completions with XP and supportive feedback
@@ -122,12 +127,12 @@ Placeholder for:
 
 ## Future ideas
 
-- multiple board themes
 - reusable move templates
 - richer milestone history
 - optional calendar planning
 - gentle reminders
 - offline install with a service worker
+- more reflection packs and personal quote collections
 
 ## Contributing
 
