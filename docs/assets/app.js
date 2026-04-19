@@ -491,6 +491,69 @@ const SHELL_TEXT = {
     progressEmpty: "Создайте первый трек, и здесь появится прогресс.",
   },
 };
+
+Object.assign(UI_TEXT.en.start, {
+  kicker: "Quick start",
+  title: "Start a track",
+  inputLabel: "Track name",
+  categoryLabel: "Type",
+  suggestionLabel: "Try",
+  create: "Start",
+  demo: "Sample board",
+});
+Object.assign(UI_TEXT.ru.start, {
+  kicker: "Быстрый старт",
+  title: "Начать трек",
+  inputLabel: "Название трека",
+  categoryLabel: "Тип",
+  suggestionLabel: "Идеи",
+  create: "Создать",
+  demo: "Пример",
+});
+Object.assign(UI_TEXT.en.modes.focus, { label: "Sessions", note: "Repeatable work blocks" });
+Object.assign(UI_TEXT.en.modes.momentum, { label: "Routine", note: "Gentle consistency" });
+Object.assign(UI_TEXT.en.modes.milestone, { label: "Checklist", note: "Step-by-step progress" });
+Object.assign(UI_TEXT.ru.modes.focus, { label: "Сессии", note: "Повторяемые подходы" });
+Object.assign(UI_TEXT.ru.modes.momentum, { label: "Рутина", note: "Спокойный ритм" });
+Object.assign(UI_TEXT.ru.modes.milestone, { label: "Чеклист", note: "Пошаговая работа" });
+Object.assign(UI_TEXT.en.board, {
+  title: "Board",
+  add: "Add track",
+  emptyTitle: "No tracks yet.",
+  emptyBody: "Start one track to give the board shape.",
+});
+Object.assign(UI_TEXT.ru.board, {
+  title: "Доска",
+  add: "Добавить трек",
+  emptyTitle: "Пока нет треков.",
+  emptyBody: "Начните с одного трека, и доска сразу станет полезной.",
+});
+Object.assign(UI_TEXT.en.dialog, {
+  modeLegend: "Style",
+  focusNote: "Best for sessions and repeatable work.",
+  momentumNote: "Best for routines you want to keep warm.",
+  milestoneNote: "Best for step-by-step projects.",
+});
+Object.assign(UI_TEXT.ru.dialog, {
+  modeLegend: "Формат",
+  focusNote: "Для сессий и повторяемых подходов.",
+  momentumNote: "Для привычек и спокойного ритма.",
+  milestoneNote: "Для проектов с понятными шагами.",
+});
+Object.assign(UI_TEXT.en.tools, {
+  kicker: "Settings",
+  title: "Settings",
+  reflectionBody: "One quiet line each day.",
+});
+Object.assign(UI_TEXT.ru.tools, {
+  kicker: "Настройки",
+  title: "Настройки",
+  reflectionBody: "Одна спокойная мысль в день.",
+});
+UI_TEXT.en.daily.log = "Do now";
+UI_TEXT.ru.daily.log = "Сделать";
+UI_TEXT.en.track.next = "Next step";
+UI_TEXT.ru.track.next = "Следующий шаг";
 const KIT_COPY = {
   en: {
     study: {
@@ -1475,6 +1538,7 @@ async function init() {
 
 function bindElements() {
   elements = {
+    brandViewLabel: document.getElementById("brandViewLabel"),
     viewToggle: document.getElementById("viewToggle"),
     settingsButton: document.getElementById("settingsButton"),
     themeFieldLabel: document.getElementById("themeFieldLabel"),
@@ -1485,7 +1549,6 @@ function bindElements() {
     startPanel: document.getElementById("startPanel"),
     startKicker: document.getElementById("startKicker"),
     startTitle: document.getElementById("startTitle"),
-    startSubtitle: document.getElementById("startSubtitle"),
     quickInputLabel: document.getElementById("quickInputLabel"),
     quickTrackTitle: document.getElementById("quickTrackTitle"),
     quickCategoryLabel: document.getElementById("quickCategoryLabel"),
@@ -1845,7 +1908,9 @@ function renderChrome() {
   }
 
   elements.themeFieldLabel.textContent = t("topbar.theme");
+  elements.themeSelect.setAttribute("aria-label", t("topbar.theme"));
   elements.settingsButton.textContent = shellText("settings");
+  elements.brandViewLabel.textContent = shellText(prefs.view);
   elements.viewToggle.innerHTML = ["today", "progress"]
     .map(
       (view) => `
@@ -1881,17 +1946,19 @@ function renderChrome() {
 
 function renderStartPanel() {
   const kit = localizedKit(prefs.quickCategory);
+  const hasTracks = state.tracks.length > 0;
+  const ideas = hasTracks ? kit.ideas.slice(0, 2) : kit.ideas;
 
   elements.startKicker.textContent = t("start.kicker");
   elements.startTitle.textContent = t("start.title");
-  elements.startSubtitle.textContent = t("start.subtitle");
   elements.quickInputLabel.textContent = t("start.inputLabel");
   elements.quickCategoryLabel.textContent = t("start.categoryLabel");
   elements.quickSuggestionLabel.textContent = t("start.suggestionLabel");
   elements.quickCreateButton.textContent = t("start.create");
   elements.loadDemoButton.textContent = t("start.demo");
   elements.quickTrackTitle.placeholder = kit.prompt;
-  elements.startPanel.classList.toggle("start-panel--compact", state.tracks.length > 0);
+  elements.quickTrackTitle.setAttribute("aria-label", t("start.inputLabel"));
+  elements.startPanel.classList.toggle("start-panel--compact", hasTracks);
 
   elements.quickCategoryRow.innerHTML = starterKits
     .map((entry) => localizedKit(entry.category))
@@ -1910,7 +1977,7 @@ function renderStartPanel() {
     })
     .join("");
 
-  elements.quickSuggestionRow.innerHTML = kit.ideas
+  elements.quickSuggestionRow.innerHTML = ideas
     .map(
       (idea) => `
         <button
@@ -2017,6 +2084,21 @@ function renderTrackCard(track) {
   const nextStep = nextStepForTrack(track);
   const nextLabel = track.mode === "milestone" ? t("track.next") : t("track.repeatable");
   const nextTitle = nextStep?.title || t("track.targetReached");
+  const nextNote = nextStep
+    ? `+${XP_TABLE[track.mode][nextStep.effort]} ${t("track.xp")}`
+    : stats.nextMilestoneLabel;
+  const nextAction = nextStep
+    ? `
+        <button
+          class="pill-button track-card__next-action"
+          type="button"
+          data-complete-track="${track.id}"
+          data-complete-step="${nextStep.id}"
+        >
+          ${escapeHtml(t("daily.log"))}
+        </button>
+      `
+    : `<span class="move-pill">${escapeHtml(t("track.completed"))}</span>`;
 
   return `
     <article class="track-card tone-${escapeAttribute(track.color)}" data-fresh="${!hasActivity}">
@@ -2026,20 +2108,17 @@ function renderTrackCard(track) {
             <span class="track-badge">${escapeHtml(categoryLabel)}</span>
             <span class="track-chip">${escapeHtml(modeLabel)}</span>
           </div>
-          <h3>${escapeHtml(track.title)}</h3>
+          <div class="track-card__title-row">
+            <h3>${escapeHtml(track.title)}</h3>
+            <div class="track-card__actions">
+              <button class="chip-action" type="button" data-edit-track="${track.id}">${escapeHtml(t("actions.edit"))}</button>
+              <button class="chip-action chip-action--danger" type="button" data-delete-track="${track.id}">${escapeHtml(
+                t("actions.remove"),
+              )}</button>
+            </div>
+          </div>
           ${track.why ? `<p class="track-card__why">${escapeHtml(track.why)}</p>` : ""}
         </div>
-        <div class="track-card__actions">
-          <button class="chip-action" type="button" data-edit-track="${track.id}">${escapeHtml(t("actions.edit"))}</button>
-          <button class="chip-action chip-action--danger" type="button" data-delete-track="${track.id}">${escapeHtml(
-            t("actions.remove"),
-          )}</button>
-        </div>
-      </div>
-
-      <div class="track-card__next">
-        <span class="track-card__eyebrow">${escapeHtml(nextLabel)}</span>
-        <strong>${escapeHtml(nextTitle)}</strong>
       </div>
 
       <div class="track-progress">
@@ -2053,31 +2132,44 @@ function renderTrackCard(track) {
         <div class="progress-bar"><span style="width: ${stats.progressPercent}%"></span></div>
         <div class="track-meta">
           <span>+${stats.totalXp} ${escapeHtml(t("track.xp"))}</span>
-          <span>${escapeHtml(stats.moveSummary)}</span>
           <span>${escapeHtml(stats.runLabel)}</span>
         </div>
+      </div>
+
+      <div class="track-card__next">
+        <div class="track-card__next-copy">
+          <div class="track-card__next-meta">
+            <span class="track-card__eyebrow">${escapeHtml(nextLabel)}</span>
+            <span class="track-card__next-note">${escapeHtml(nextNote)}</span>
+          </div>
+          <strong>${escapeHtml(nextTitle)}</strong>
+        </div>
+        ${nextAction}
       </div>
 
       <section class="move-list">
         <div class="move-list__head">
           <h4>${escapeHtml(t("track.moveList"))}</h4>
-          <span>${escapeHtml(track.mode === "milestone" ? t("track.next") : t("track.repeatable"))}</span>
+          <span>${escapeHtml(stats.moveSummary)}</span>
         </div>
-        ${renderMoveRows(track)}
+        ${renderMoveRows(track, nextStep?.id || null)}
       </section>
     </article>
   `;
 }
 
-function renderMoveRows(track) {
+function renderMoveRows(track, featuredStepId = null) {
   if (!track.steps.length) {
     return `<div class="empty-copy">${escapeHtml(t("daily.empty"))}</div>`;
   }
 
+  const hiddenFeaturedId = track.steps.length > 1 ? featuredStepId : null;
+
   if (track.mode === "milestone") {
     const completedIds = completedStepIdsForTrack(track);
     const openRows = track.steps
-      .filter((step) => !completedIds.has(step.id))
+      .filter((step) => !completedIds.has(step.id) && step.id !== hiddenFeaturedId)
+      .slice(0, 2)
       .map((step) => renderOpenMove(track, step));
     const doneRows = track.steps
       .filter((step) => completedIds.has(step.id))
@@ -2102,17 +2194,18 @@ function renderMoveRows(track) {
   }
 
   const counts = countCompletionsByStep(track.id);
-  const rows = [...track.steps]
-    .sort((left, right) => {
-      const leftCount = counts[left.id] || 0;
-      const rightCount = counts[right.id] || 0;
-      if (leftCount !== rightCount) {
-        return leftCount - rightCount;
-      }
-      return EFFORT_POINTS[left.effort] - EFFORT_POINTS[right.effort];
-    })
-    .slice(0, 3)
-    .map((step) => renderRepeatableMove(track, step, counts[step.id] || 0));
+    const rows = [...track.steps]
+      .sort((left, right) => {
+        const leftCount = counts[left.id] || 0;
+        const rightCount = counts[right.id] || 0;
+        if (leftCount !== rightCount) {
+          return leftCount - rightCount;
+        }
+        return EFFORT_POINTS[left.effort] - EFFORT_POINTS[right.effort];
+      })
+      .filter((step) => step.id !== hiddenFeaturedId)
+      .slice(0, 2)
+      .map((step) => renderRepeatableMove(track, step, counts[step.id] || 0));
 
   return rows.join("");
 }
@@ -2223,7 +2316,7 @@ function renderActivityFeed() {
   }
 
   elements.activityFeed.innerHTML = state.activity
-    .slice(0, 5)
+    .slice(0, 4)
     .map((entry) => {
       const track = state.tracks.find((item) => item.id === entry.trackId);
       return `
@@ -2423,9 +2516,10 @@ function renderDialogChrome() {
 function toggleLayoutState() {
   const hasTracks = state.tracks.length > 0;
   const hasAnalytics = state.activity.length > 0;
+  const hasRecentActivity = state.activity.length > 2;
   elements.summaryRow.classList.toggle("is-hidden", !hasTracks);
   elements.sidebar.classList.toggle("is-hidden", !hasTracks);
-  elements.activityPanel.classList.toggle("is-hidden", !hasAnalytics);
+  elements.activityPanel.classList.toggle("is-hidden", !hasRecentActivity);
   elements.progressEmpty.classList.toggle("is-hidden", hasTracks);
   elements.analyticsGrid.classList.toggle("is-hidden", !hasAnalytics);
   elements.workspaceGrid.classList.toggle("main-grid--solo", !hasTracks);

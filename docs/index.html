@@ -12,8 +12,8 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     >
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260419-3">
-    <link rel="stylesheet" href="assets/site.css?v=20260419-3">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260419-4">
+    <link rel="stylesheet" href="assets/site.css?v=20260419-4">
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
@@ -21,69 +21,77 @@
       <header class="app-topbar panel">
         <div class="topbar-main">
           <div class="brand">
-            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-mark" aria-hidden="true">
+              <span class="brand-mark__bar brand-mark__bar--one"></span>
+              <span class="brand-mark__bar brand-mark__bar--two"></span>
+              <span class="brand-mark__bar brand-mark__bar--three"></span>
+              <span class="brand-mark__glow"></span>
+            </span>
             <div class="brand-copy">
               <strong>Momentum</strong>
+              <span id="brandViewLabel"></span>
             </div>
           </div>
-          <div class="segmented topbar-nav" id="viewToggle" aria-label="View"></div>
         </div>
+        <div class="segmented topbar-nav" id="viewToggle" aria-label="View"></div>
         <div class="topbar-controls">
           <button class="quiet-button" id="settingsButton" type="button"></button>
           <div class="segmented" id="languageToggle" aria-label="Language"></div>
           <label class="theme-field">
-            <span id="themeFieldLabel"></span>
+            <span class="visually-hidden" id="themeFieldLabel"></span>
             <select id="themeSelect"></select>
           </label>
         </div>
       </header>
 
       <section class="view-screen" id="todayView">
-        <section class="panel start-panel" id="startPanel">
-          <div class="start-panel__head">
-            <p class="section-kicker" id="startKicker"></p>
-            <h1 id="startTitle"></h1>
-            <p class="start-panel__subtitle" id="startSubtitle"></p>
-          </div>
-
-          <form class="quick-start" id="quickStartForm">
-            <label class="quick-input">
-              <span id="quickInputLabel"></span>
-              <input id="quickTrackTitle" name="quickTitle" maxlength="70" type="text">
-            </label>
-
-            <div class="start-options">
-              <section class="option-group">
-                <div class="option-group__head">
-                  <span id="quickCategoryLabel"></span>
-                </div>
-                <div class="choice-row" id="quickCategoryRow"></div>
-              </section>
-
-              <section class="option-group option-group--wide">
-                <div class="option-group__head">
-                  <span id="quickSuggestionLabel"></span>
-                </div>
-                <div class="suggestion-row" id="quickSuggestionRow"></div>
-              </section>
+        <section class="today-rail">
+          <section class="panel start-panel" id="startPanel">
+            <div class="start-panel__head">
+              <div class="start-panel__copy">
+                <p class="section-kicker" id="startKicker"></p>
+                <h1 id="startTitle"></h1>
+              </div>
+              <button class="quiet-button" id="loadDemoButton" type="button"></button>
             </div>
 
-            <div class="quick-actions">
-              <button class="button button--primary" id="quickCreateButton" type="submit"></button>
-              <button class="button button--ghost" id="loadDemoButton" type="button"></button>
-            </div>
-          </form>
-        </section>
+            <form class="quick-start" id="quickStartForm">
+              <div class="quick-start__bar">
+                <label class="quick-input">
+                  <span class="visually-hidden" id="quickInputLabel"></span>
+                  <input id="quickTrackTitle" name="quickTitle" maxlength="70" type="text">
+                </label>
+                <button class="button button--primary" id="quickCreateButton" type="submit"></button>
+              </div>
 
-        <section class="quote-row" id="quoteSection">
-          <article class="panel quote-card">
-            <div class="quote-card__head">
-              <p class="section-kicker" id="quoteKicker"></p>
-              <button class="quiet-button" id="hideQuoteButton" type="button"></button>
-            </div>
-            <blockquote class="quote-card__text" id="quoteText"></blockquote>
-            <p class="quote-card__source" id="quoteSource"></p>
-          </article>
+              <div class="start-options">
+                <section class="option-group">
+                  <div class="option-group__head">
+                    <span id="quickCategoryLabel"></span>
+                  </div>
+                  <div class="choice-row" id="quickCategoryRow"></div>
+                </section>
+
+                <section class="option-group option-group--ideas">
+                  <div class="option-group__head">
+                    <span id="quickSuggestionLabel"></span>
+                  </div>
+                  <div class="suggestion-row" id="quickSuggestionRow"></div>
+                </section>
+              </div>
+            </form>
+          </section>
+
+          <section class="quote-row" id="quoteSection">
+            <article class="panel quote-card">
+              <div class="quote-card__head">
+                <p class="section-kicker" id="quoteKicker"></p>
+                <button class="quiet-button" id="hideQuoteButton" type="button"></button>
+              </div>
+              <blockquote class="quote-card__text" id="quoteText"></blockquote>
+              <p class="quote-card__source" id="quoteSource"></p>
+            </article>
+          </section>
         </section>
 
         <section class="main-grid" id="workspaceGrid">
@@ -305,6 +313,6 @@
 
     <div class="toast" id="feedbackToast" aria-live="polite"></div>
 
-    <script type="module" src="assets/app.js?v=20260419-3"></script>
+    <script type="module" src="assets/app.js?v=20260419-4"></script>
   </body>
 </html>
