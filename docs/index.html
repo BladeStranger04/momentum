@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Small Wins</title>
+    <title>Momentum</title>
     <meta name="description" content="">
     <meta name="theme-color" content="#f4efe8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,20 +12,24 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     >
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260418-2">
-    <link rel="stylesheet" href="assets/site.css?v=20260418-2">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260419-3">
+    <link rel="stylesheet" href="assets/site.css?v=20260419-3">
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
     <main class="app-shell">
       <header class="app-topbar panel">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true"></span>
-          <div class="brand-copy">
-            <strong>Small Wins</strong>
+        <div class="topbar-main">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <div class="brand-copy">
+              <strong>Momentum</strong>
+            </div>
           </div>
+          <div class="segmented topbar-nav" id="viewToggle" aria-label="View"></div>
         </div>
         <div class="topbar-controls">
+          <button class="quiet-button" id="settingsButton" type="button"></button>
           <div class="segmented" id="languageToggle" aria-label="Language"></div>
           <label class="theme-field">
             <span id="themeFieldLabel"></span>
@@ -34,173 +38,185 @@
         </div>
       </header>
 
-      <section class="panel start-panel">
-        <div class="start-panel__head">
-          <p class="section-kicker" id="startKicker"></p>
-          <h1 id="startTitle"></h1>
-          <p class="start-panel__subtitle" id="startSubtitle"></p>
-        </div>
-
-        <form class="quick-start" id="quickStartForm">
-          <label class="quick-input">
-            <span id="quickInputLabel"></span>
-            <input id="quickTrackTitle" name="quickTitle" maxlength="70" type="text">
-          </label>
-
-          <div class="start-options">
-            <section class="option-group">
-              <div class="option-group__head">
-                <span id="quickModeLabel"></span>
-              </div>
-              <div class="choice-row" id="quickModeRow"></div>
-            </section>
-
-            <section class="option-group">
-              <div class="option-group__head">
-                <span id="quickCategoryLabel"></span>
-              </div>
-              <div class="choice-row" id="quickCategoryRow"></div>
-            </section>
-
-            <section class="option-group option-group--wide">
-              <div class="option-group__head">
-                <span id="quickSuggestionLabel"></span>
-              </div>
-              <div class="suggestion-row" id="quickSuggestionRow"></div>
-            </section>
+      <section class="view-screen" id="todayView">
+        <section class="panel start-panel" id="startPanel">
+          <div class="start-panel__head">
+            <p class="section-kicker" id="startKicker"></p>
+            <h1 id="startTitle"></h1>
+            <p class="start-panel__subtitle" id="startSubtitle"></p>
           </div>
 
-          <div class="quick-actions">
-            <button class="button button--primary" id="quickCreateButton" type="submit"></button>
-            <button class="button button--ghost" id="loadDemoButton" type="button"></button>
-          </div>
-        </form>
-      </section>
+          <form class="quick-start" id="quickStartForm">
+            <label class="quick-input">
+              <span id="quickInputLabel"></span>
+              <input id="quickTrackTitle" name="quickTitle" maxlength="70" type="text">
+            </label>
 
-      <section class="quote-row" id="quoteSection">
-        <article class="panel quote-card">
-          <div class="quote-card__head">
-            <p class="section-kicker" id="quoteKicker"></p>
-            <button class="quiet-button" id="hideQuoteButton" type="button"></button>
-          </div>
-          <blockquote class="quote-card__text" id="quoteText"></blockquote>
-          <p class="quote-card__source" id="quoteSource"></p>
-        </article>
-      </section>
+            <div class="start-options">
+              <section class="option-group">
+                <div class="option-group__head">
+                  <span id="quickCategoryLabel"></span>
+                </div>
+                <div class="choice-row" id="quickCategoryRow"></div>
+              </section>
 
-      <section class="summary-row" id="summaryRow"></section>
-
-      <section class="main-grid" id="workspaceGrid">
-        <section class="panel board-panel">
-          <div class="section-heading">
-            <div>
-              <p class="section-kicker" id="boardKicker"></p>
-              <h2 id="boardTitle"></h2>
+              <section class="option-group option-group--wide">
+                <div class="option-group__head">
+                  <span id="quickSuggestionLabel"></span>
+                </div>
+                <div class="suggestion-row" id="quickSuggestionRow"></div>
+              </section>
             </div>
-            <button class="button button--secondary" id="newTrackButton" type="button"></button>
-          </div>
-          <div class="board-empty" id="boardEmpty">
-            <h3 id="boardEmptyTitle"></h3>
-            <p id="boardEmptyBody"></p>
-          </div>
-          <div class="tracks-grid" id="tracksGrid"></div>
+
+            <div class="quick-actions">
+              <button class="button button--primary" id="quickCreateButton" type="submit"></button>
+              <button class="button button--ghost" id="loadDemoButton" type="button"></button>
+            </div>
+          </form>
         </section>
 
-        <aside class="sidebar" id="sidebar">
-          <section class="panel daily-panel">
-            <div class="section-heading section-heading--tight">
-              <div>
-                <p class="section-kicker" id="dailyKicker"></p>
-                <h2 id="dailyTitle"></h2>
-              </div>
+        <section class="quote-row" id="quoteSection">
+          <article class="panel quote-card">
+            <div class="quote-card__head">
+              <p class="section-kicker" id="quoteKicker"></p>
+              <button class="quiet-button" id="hideQuoteButton" type="button"></button>
             </div>
-            <div class="daily-brief" id="dailyBrief"></div>
-            <div class="micro-list" id="dailyList"></div>
+            <blockquote class="quote-card__text" id="quoteText"></blockquote>
+            <p class="quote-card__source" id="quoteSource"></p>
+          </article>
+        </section>
+
+        <section class="main-grid" id="workspaceGrid">
+          <section class="panel board-panel">
+            <div class="section-heading">
+              <div>
+                <p class="section-kicker" id="boardKicker"></p>
+                <h2 id="boardTitle"></h2>
+              </div>
+              <button class="button button--secondary" id="newTrackButton" type="button"></button>
+            </div>
+            <div class="board-empty" id="boardEmpty">
+              <h3 id="boardEmptyTitle"></h3>
+              <p id="boardEmptyBody"></p>
+            </div>
+            <div class="tracks-grid" id="tracksGrid"></div>
           </section>
 
-          <section class="panel feed-panel">
+          <aside class="sidebar" id="sidebar">
+            <section class="panel daily-panel">
+              <div class="section-heading section-heading--tight">
+                <div>
+                  <p class="section-kicker" id="dailyKicker"></p>
+                  <h2 id="dailyTitle"></h2>
+                </div>
+              </div>
+              <div class="daily-brief" id="dailyBrief"></div>
+              <div class="micro-list" id="dailyList"></div>
+            </section>
+
+            <section class="panel feed-panel" id="activityPanel">
+              <div class="section-heading section-heading--tight">
+                <div>
+                  <p class="section-kicker" id="activityKicker"></p>
+                  <h2 id="activityTitle"></h2>
+                </div>
+              </div>
+              <div class="activity-feed" id="activityFeed"></div>
+            </section>
+          </aside>
+        </section>
+      </section>
+
+      <section class="view-screen is-hidden" id="progressView">
+        <section class="panel progress-empty" id="progressEmpty">
+          <div class="section-heading section-heading--tight">
+            <div>
+              <p class="section-kicker" id="progressKicker"></p>
+              <h2 id="progressTitle"></h2>
+            </div>
+          </div>
+          <p class="empty-copy" id="progressEmptyBody"></p>
+        </section>
+
+        <section class="summary-row" id="summaryRow"></section>
+
+        <section class="analytics-grid" id="analyticsGrid">
+          <section class="panel chart-panel">
             <div class="section-heading section-heading--tight">
               <div>
-                <p class="section-kicker" id="activityKicker"></p>
-                <h2 id="activityTitle"></h2>
+                <p class="section-kicker" id="analyticsKickerOne"></p>
+                <h2 id="weeklyChartTitle"></h2>
               </div>
             </div>
-            <div class="activity-feed" id="activityFeed"></div>
+            <div id="weeklyWinsChart" class="chart-host"></div>
           </section>
-        </aside>
-      </section>
 
-      <section class="analytics-grid" id="analyticsGrid">
-        <section class="panel chart-panel">
-          <div class="section-heading section-heading--tight">
-            <div>
-              <p class="section-kicker" id="analyticsKickerOne"></p>
-              <h2 id="weeklyChartTitle"></h2>
+          <section class="panel chart-panel">
+            <div class="section-heading section-heading--tight">
+              <div>
+                <p class="section-kicker" id="analyticsKickerTwo"></p>
+                <h2 id="momentumChartTitle"></h2>
+              </div>
             </div>
-          </div>
-          <div id="weeklyWinsChart" class="chart-host"></div>
-        </section>
+            <div id="momentumChart" class="chart-host"></div>
+          </section>
 
-        <section class="panel chart-panel">
-          <div class="section-heading section-heading--tight">
-            <div>
-              <p class="section-kicker" id="analyticsKickerTwo"></p>
-              <h2 id="momentumChartTitle"></h2>
+          <section class="panel chart-panel">
+            <div class="section-heading section-heading--tight">
+              <div>
+                <p class="section-kicker" id="analyticsKickerThree"></p>
+                <h2 id="heatmapChartTitle"></h2>
+              </div>
             </div>
-          </div>
-          <div id="momentumChart" class="chart-host"></div>
-        </section>
-
-        <section class="panel chart-panel">
-          <div class="section-heading section-heading--tight">
-            <div>
-              <p class="section-kicker" id="analyticsKickerThree"></p>
-              <h2 id="heatmapChartTitle"></h2>
-            </div>
-          </div>
-          <div id="heatmapChart" class="chart-host"></div>
+            <div id="heatmapChart" class="chart-host"></div>
+          </section>
         </section>
       </section>
+    </main>
 
-      <section class="panel tools-panel">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker" id="toolsKicker"></p>
-            <h2 id="toolsTitle"></h2>
-          </div>
+    <dialog class="settings-dialog" id="settingsDialog">
+      <form method="dialog" class="dialog-close-row">
+        <button class="quiet-button" id="settingsCloseButton" type="submit" value="cancel"></button>
+      </form>
+
+      <section class="track-form settings-form">
+        <div class="dialog-copy">
+          <p class="section-kicker" id="toolsKicker"></p>
+          <h2 id="toolsTitle"></h2>
         </div>
-        <div class="tools-grid">
-          <article class="tool-card">
+
+        <div class="settings-grid">
+          <article class="tool-card settings-card settings-card--primary">
             <strong id="reflectionToolTitle"></strong>
             <p id="reflectionToolBody"></p>
             <label class="tool-select">
               <span id="quoteStyleLabel"></span>
               <select id="quoteStyleSelect"></select>
             </label>
-            <button class="button button--secondary" id="toggleQuoteButton" type="button"></button>
+            <button class="quiet-button" id="toggleQuoteButton" type="button"></button>
           </article>
 
-          <article class="tool-card">
+          <article class="tool-card settings-card">
             <strong id="exportTitle"></strong>
             <p id="exportBody"></p>
-            <button class="button button--secondary" id="exportDataButton" type="button"></button>
+            <button class="quiet-button" id="exportDataButton" type="button"></button>
           </article>
 
-          <article class="tool-card">
+          <article class="tool-card settings-card">
             <strong id="importTitle"></strong>
             <p id="importBody"></p>
-            <button class="button button--ghost" id="importDataButton" type="button"></button>
+            <button class="quiet-button" id="importDataButton" type="button"></button>
           </article>
 
-          <article class="tool-card">
+          <article class="tool-card settings-card">
             <strong id="resetTitle"></strong>
             <p id="resetBody"></p>
-            <button class="button button--danger" id="resetDataButton" type="button"></button>
+            <button class="quiet-button quiet-button--danger" id="resetDataButton" type="button"></button>
           </article>
         </div>
         <input class="visually-hidden" id="importFileInput" type="file" accept="application/json">
       </section>
-    </main>
+    </dialog>
 
     <dialog class="track-dialog" id="trackDialog">
       <form method="dialog" class="dialog-close-row">
@@ -289,6 +305,6 @@
 
     <div class="toast" id="feedbackToast" aria-live="polite"></div>
 
-    <script type="module" src="assets/app.js?v=20260418-2"></script>
+    <script type="module" src="assets/app.js?v=20260419-3"></script>
   </body>
 </html>

@@ -1,16 +1,16 @@
-# Small Wins
+# Momentum
 
-Small Wins is a static, supportive progress app for people who procrastinate on work that feels vague, heavy, or emotionally uncomfortable.
+Momentum is a static, supportive progress app for people who procrastinate on work that feels vague, heavy, or emotionally uncomfortable.
 
 Instead of treating everything like a rigid to-do list, it turns goals into lighter tracks with repeatable moves, momentum, milestones, XP, and visual feedback. The point is not to gamify life for its own sake. The point is to make starting easier, progress clearer, and returning after a gap feel normal instead of shameful.
 
-[Live demo](https://bladestranger04.github.io/small-wins/)
+Live demo: [Momentum](https://bladestranger04.github.io/small-wins/)
 
 ## Why this exists
 
 A lot of procrastination is not laziness. It is friction.
 
-Tasks feel too big, too fuzzy, too boring, or too emotionally loaded to begin. Small Wins is built around a simple product bet:
+Tasks feel too big, too fuzzy, too boring, or too emotionally loaded to begin. Momentum is built around a simple product bet:
 
 - if the first move feels smaller, people start more often
 - if progress becomes visible quickly, they keep going
@@ -18,7 +18,8 @@ Tasks feel too big, too fuzzy, too boring, or too emotionally loaded to begin. S
 
 ## What the MVP does
 
-- app-first quick start into a first track
+- app-first `Today` view focused on starting and doing
+- separate `Progress` view for trends and visual history
 - three play styles: Focus, Momentum, Milestone
 - four built-in themes with local persistence
 - English and Russian UI
@@ -27,7 +28,7 @@ Tasks feel too big, too fuzzy, too boring, or too emotionally loaded to begin. S
 - breaks goals into smaller moves
 - logs completions with XP and supportive feedback
 - track editing and removal without leaving the board
-- supports local JSON export and import
+- keeps import, export, and reset actions in Settings
 - shows progress bars, levels, weekly wins, momentum trend, and a consistency map
 - keeps everything in browser storage
 - ships as a static site that works on GitHub Pages
@@ -100,13 +101,14 @@ small-wins/
 
 Placeholder for:
 
-- dashboard view
+- Today view
+- Progress view
 - first-track setup dialog
-- analytics section on desktop and mobile
+- settings dialog
 
 ## Notes on product design
 
-- Small wins matter as much as big sessions.
+- Small steps matter as much as big sessions.
 - Momentum is more important than punishment.
 - Missing a day should not make the system feel hostile.
 - The app rewards starting early and returning after gaps.

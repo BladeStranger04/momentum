@@ -20,7 +20,7 @@ python -m http.server 8000 --directory docs
 
 ## Design notes
 
-- small wins should matter
+- small steps should matter
 - returning after a gap should feel normal
 - the interface should lower mental resistance, not add ceremony
 - game mechanics should stay tasteful and adult-friendly

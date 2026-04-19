@@ -475,6 +475,22 @@ const UI_TEXT = {
     },
   },
 };
+const SHELL_TEXT = {
+  en: {
+    today: "Today",
+    progress: "Progress",
+    settings: "Settings",
+    progressTitle: "Progress over time",
+    progressEmpty: "Start one track and progress will show up here.",
+  },
+  ru: {
+    today: "Сегодня",
+    progress: "Прогресс",
+    settings: "Настройки",
+    progressTitle: "Прогресс во времени",
+    progressEmpty: "Создайте первый трек, и здесь появится прогресс.",
+  },
+};
 const KIT_COPY = {
   en: {
     study: {
@@ -1459,18 +1475,21 @@ async function init() {
 
 function bindElements() {
   elements = {
+    viewToggle: document.getElementById("viewToggle"),
+    settingsButton: document.getElementById("settingsButton"),
     themeFieldLabel: document.getElementById("themeFieldLabel"),
     themeSelect: document.getElementById("themeSelect"),
     languageToggle: document.getElementById("languageToggle"),
+    todayView: document.getElementById("todayView"),
+    progressView: document.getElementById("progressView"),
+    startPanel: document.getElementById("startPanel"),
     startKicker: document.getElementById("startKicker"),
     startTitle: document.getElementById("startTitle"),
     startSubtitle: document.getElementById("startSubtitle"),
     quickInputLabel: document.getElementById("quickInputLabel"),
     quickTrackTitle: document.getElementById("quickTrackTitle"),
-    quickModeLabel: document.getElementById("quickModeLabel"),
     quickCategoryLabel: document.getElementById("quickCategoryLabel"),
     quickSuggestionLabel: document.getElementById("quickSuggestionLabel"),
-    quickModeRow: document.getElementById("quickModeRow"),
     quickCategoryRow: document.getElementById("quickCategoryRow"),
     quickSuggestionRow: document.getElementById("quickSuggestionRow"),
     quickCreateButton: document.getElementById("quickCreateButton"),
@@ -1491,6 +1510,7 @@ function bindElements() {
     boardEmptyBody: document.getElementById("boardEmptyBody"),
     tracksGrid: document.getElementById("tracksGrid"),
     sidebar: document.getElementById("sidebar"),
+    activityPanel: document.getElementById("activityPanel"),
     dailyKicker: document.getElementById("dailyKicker"),
     dailyTitle: document.getElementById("dailyTitle"),
     dailyBrief: document.getElementById("dailyBrief"),
@@ -1498,6 +1518,10 @@ function bindElements() {
     activityKicker: document.getElementById("activityKicker"),
     activityTitle: document.getElementById("activityTitle"),
     activityFeed: document.getElementById("activityFeed"),
+    progressEmpty: document.getElementById("progressEmpty"),
+    progressKicker: document.getElementById("progressKicker"),
+    progressTitle: document.getElementById("progressTitle"),
+    progressEmptyBody: document.getElementById("progressEmptyBody"),
     analyticsGrid: document.getElementById("analyticsGrid"),
     analyticsKickerOne: document.getElementById("analyticsKickerOne"),
     analyticsKickerTwo: document.getElementById("analyticsKickerTwo"),
@@ -1525,6 +1549,8 @@ function bindElements() {
     resetBody: document.getElementById("resetBody"),
     resetDataButton: document.getElementById("resetDataButton"),
     importFileInput: document.getElementById("importFileInput"),
+    settingsDialog: document.getElementById("settingsDialog"),
+    settingsCloseButton: document.getElementById("settingsCloseButton"),
     dialogCloseButton: document.getElementById("dialogCloseButton"),
     trackDialog: document.getElementById("trackDialog"),
     trackForm: document.getElementById("trackForm"),
@@ -1566,13 +1592,14 @@ function bindEvents() {
   elements.loadDemoButton.addEventListener("click", loadDemoState);
   elements.newTrackButton.addEventListener("click", () => openTrackDialog(!state.tracks.length));
   elements.themeSelect.addEventListener("change", handleThemeChange);
+  elements.settingsButton.addEventListener("click", openSettingsDialog);
   elements.quoteStyleSelect.addEventListener("change", handleQuoteStyleChange);
   elements.toggleQuoteButton.addEventListener("click", toggleQuoteVisibility);
   elements.hideQuoteButton.addEventListener("click", () => {
     prefs.quoteVisible = false;
     savePrefs();
     renderDailyQuote();
-    renderToolsPanel();
+    renderSettingsPanel();
     showToast(t("actions.quoteHidden"));
   });
   elements.exportDataButton.addEventListener("click", exportData);
@@ -1595,19 +1622,15 @@ function bindEvents() {
       return;
     }
 
-    const modeButton = event.target.closest("[data-quick-mode]");
-    if (modeButton) {
-      prefs.quickMode = safeMode(modeButton.dataset.quickMode);
-      savePrefs();
-      renderStartPanel();
+    const viewButton = event.target.closest("[data-view]");
+    if (viewButton) {
+      setView(viewButton.dataset.view);
       return;
     }
 
     const categoryButton = event.target.closest("[data-quick-category]");
     if (categoryButton) {
-      const kit = localizedKit(categoryButton.dataset.quickCategory);
-      prefs.quickCategory = kit.category;
-      prefs.quickMode = kit.default_mode;
+      prefs.quickCategory = starterKit(categoryButton.dataset.quickCategory).category;
       savePrefs();
       renderStartPanel();
       return;
@@ -1671,7 +1694,7 @@ function createDefaultPrefs() {
   return {
     theme: "light",
     language: "en",
-    quickMode: "focus",
+    view: "today",
     quickCategory: "study",
     quoteVisible: true,
     quoteStyle: "reflective",
@@ -1776,9 +1799,8 @@ function sanitizePrefs(parsed) {
 
   const theme = THEMES[parsed.theme] ? parsed.theme : base.theme;
   const language = LANGUAGES.includes(parsed.language) ? parsed.language : base.language;
+  const view = ["today", "progress"].includes(parsed.view) ? parsed.view : base.view;
   const quickCategory = starterKit(parsed.quickCategory).category;
-  const defaultMode = localizedKit(quickCategory).default_mode;
-  const quickMode = safeMode(parsed.quickMode, defaultMode);
   const quoteStyle = ["general", "reflective", "bible"].includes(parsed.quoteStyle)
     ? parsed.quoteStyle
     : base.quoteStyle;
@@ -1786,7 +1808,7 @@ function sanitizePrefs(parsed) {
   return {
     theme,
     language,
-    quickMode,
+    view,
     quickCategory,
     quoteVisible: parsed.quoteVisible !== false,
     quoteStyle,
@@ -1806,21 +1828,38 @@ function render() {
   renderBoard();
   renderDailyPanel();
   renderActivityFeed();
+  renderProgressPanel();
   renderAnalytics();
-  renderToolsPanel();
+  renderSettingsPanel();
   renderDialogChrome();
   toggleLayoutState();
+  applyView();
 }
 
 function renderChrome() {
   document.documentElement.lang = prefs.language;
-  document.title = "Small Wins";
+  document.title = "Momentum";
   const description = document.querySelector('meta[name="description"]');
   if (description) {
     description.setAttribute("content", t("metaDescription"));
   }
 
   elements.themeFieldLabel.textContent = t("topbar.theme");
+  elements.settingsButton.textContent = shellText("settings");
+  elements.viewToggle.innerHTML = ["today", "progress"]
+    .map(
+      (view) => `
+        <button
+          type="button"
+          class="${view === prefs.view ? "is-active" : ""}"
+          aria-pressed="${view === prefs.view}"
+          data-view="${view}"
+        >
+          ${escapeHtml(shellText(view))}
+        </button>
+      `,
+    )
+    .join("");
   elements.languageToggle.innerHTML = LANGUAGES.map(
     (language) => `
       <button
@@ -1847,29 +1886,12 @@ function renderStartPanel() {
   elements.startTitle.textContent = t("start.title");
   elements.startSubtitle.textContent = t("start.subtitle");
   elements.quickInputLabel.textContent = t("start.inputLabel");
-  elements.quickModeLabel.textContent = t("start.modeLabel");
   elements.quickCategoryLabel.textContent = t("start.categoryLabel");
   elements.quickSuggestionLabel.textContent = t("start.suggestionLabel");
   elements.quickCreateButton.textContent = t("start.create");
   elements.loadDemoButton.textContent = t("start.demo");
   elements.quickTrackTitle.placeholder = kit.prompt;
-
-  elements.quickModeRow.innerHTML = ["focus", "momentum", "milestone"]
-    .map((mode) => {
-      const active = prefs.quickMode === mode;
-      return `
-        <button
-          class="choice-button ${active ? "is-active" : ""}"
-          type="button"
-          aria-pressed="${active}"
-          data-quick-mode="${mode}"
-        >
-          <strong>${escapeHtml(t(`modes.${mode}.label`))}</strong>
-          <span>${escapeHtml(t(`modes.${mode}.note`))}</span>
-        </button>
-      `;
-    })
-    .join("");
+  elements.startPanel.classList.toggle("start-panel--compact", state.tracks.length > 0);
 
   elements.quickCategoryRow.innerHTML = starterKits
     .map((entry) => localizedKit(entry.category))
@@ -1877,13 +1899,12 @@ function renderStartPanel() {
       const active = prefs.quickCategory === item.category;
       return `
         <button
-          class="choice-button ${active ? "is-active" : ""}"
+          class="choice-button choice-button--compact ${active ? "is-active" : ""}"
           type="button"
           aria-pressed="${active}"
           data-quick-category="${item.category}"
         >
           <strong>${escapeHtml(item.label)}</strong>
-          <span>${escapeHtml(t(`modes.${item.default_mode}.label`))}</span>
         </button>
       `;
     })
@@ -1902,6 +1923,12 @@ function renderStartPanel() {
       `,
     )
     .join("");
+}
+
+function renderProgressPanel() {
+  elements.progressKicker.textContent = shellText("progress");
+  elements.progressTitle.textContent = shellText("progressTitle");
+  elements.progressEmptyBody.textContent = shellText("progressEmpty");
 }
 
 function renderDailyQuote() {
@@ -1987,18 +2014,20 @@ function renderTrackCard(track) {
   const categoryLabel = t(`categories.${track.category}`);
   const modeLabel = t(`modes.${track.mode}.label`);
   const hasActivity = state.activity.some((entry) => entry.trackId === track.id);
+  const nextStep = nextStepForTrack(track);
+  const nextLabel = track.mode === "milestone" ? t("track.next") : t("track.repeatable");
+  const nextTitle = nextStep?.title || t("track.targetReached");
 
   return `
     <article class="track-card tone-${escapeAttribute(track.color)}" data-fresh="${!hasActivity}">
       <div class="track-card__header">
-        <div>
+        <div class="track-card__main">
           <div class="track-card__tags">
             <span class="track-badge">${escapeHtml(categoryLabel)}</span>
             <span class="track-chip">${escapeHtml(modeLabel)}</span>
-            <span class="track-chip">${escapeHtml(stats.runLabel)}</span>
           </div>
           <h3>${escapeHtml(track.title)}</h3>
-          ${track.why ? `<p class="empty-copy">${escapeHtml(track.why)}</p>` : ""}
+          ${track.why ? `<p class="track-card__why">${escapeHtml(track.why)}</p>` : ""}
         </div>
         <div class="track-card__actions">
           <button class="chip-action" type="button" data-edit-track="${track.id}">${escapeHtml(t("actions.edit"))}</button>
@@ -2006,6 +2035,11 @@ function renderTrackCard(track) {
             t("actions.remove"),
           )}</button>
         </div>
+      </div>
+
+      <div class="track-card__next">
+        <span class="track-card__eyebrow">${escapeHtml(nextLabel)}</span>
+        <strong>${escapeHtml(nextTitle)}</strong>
       </div>
 
       <div class="track-progress">
@@ -2020,6 +2054,7 @@ function renderTrackCard(track) {
         <div class="track-meta">
           <span>+${stats.totalXp} ${escapeHtml(t("track.xp"))}</span>
           <span>${escapeHtml(stats.moveSummary)}</span>
+          <span>${escapeHtml(stats.runLabel)}</span>
         </div>
       </div>
 
@@ -2046,6 +2081,7 @@ function renderMoveRows(track) {
       .map((step) => renderOpenMove(track, step));
     const doneRows = track.steps
       .filter((step) => completedIds.has(step.id))
+      .slice(0, 1)
       .map((step) => renderDoneMove(track, step));
 
     if (!openRows.length) {
@@ -2075,7 +2111,7 @@ function renderMoveRows(track) {
       }
       return EFFORT_POINTS[left.effort] - EFFORT_POINTS[right.effort];
     })
-    .slice(0, 4)
+    .slice(0, 3)
     .map((step) => renderRepeatableMove(track, step, counts[step.id] || 0));
 
   return rows.join("");
@@ -2187,7 +2223,7 @@ function renderActivityFeed() {
   }
 
   elements.activityFeed.innerHTML = state.activity
-    .slice(0, 8)
+    .slice(0, 5)
     .map((entry) => {
       const track = state.tracks.find((item) => item.id === entry.trackId);
       return `
@@ -2210,6 +2246,7 @@ function renderAnalytics() {
   elements.weeklyChartTitle.textContent = t("analytics.weekly");
   elements.momentumChartTitle.textContent = t("analytics.momentum");
   elements.heatmapChartTitle.textContent = t("analytics.heatmap");
+  elements.analyticsGrid.dataset.density = state.activity.length < 6 ? "quiet" : "active";
 
   renderWeeklyWins();
   renderMomentumChart();
@@ -2305,9 +2342,13 @@ function renderHeatmap() {
   `;
 }
 
-function renderToolsPanel() {
+function renderSettingsPanel() {
+  if (elements.settingsDialog) {
+    elements.settingsDialog.dataset.density = state.activity.length < 4 ? "quiet" : "active";
+  }
+
   elements.toolsKicker.textContent = t("tools.kicker");
-  elements.toolsTitle.textContent = t("tools.title");
+  elements.toolsTitle.textContent = shellText("settings");
   elements.reflectionToolTitle.textContent = t("tools.reflectionTitle");
   elements.reflectionToolBody.textContent = t("tools.reflectionBody");
   elements.quoteStyleLabel.textContent = t("tools.styleLabel");
@@ -2321,6 +2362,7 @@ function renderToolsPanel() {
   elements.resetTitle.textContent = t("tools.resetTitle");
   elements.resetBody.textContent = t("tools.resetBody");
   elements.resetDataButton.textContent = t("tools.reset");
+  elements.settingsCloseButton.textContent = t("dialog.close");
 
   elements.quoteStyleSelect.innerHTML = ["general", "reflective", "bible"]
     .map((style) => `<option value="${style}">${escapeHtml(t(`quote.styles.${style}`))}</option>`)
@@ -2380,9 +2422,12 @@ function renderDialogChrome() {
 
 function toggleLayoutState() {
   const hasTracks = state.tracks.length > 0;
+  const hasAnalytics = state.activity.length > 0;
   elements.summaryRow.classList.toggle("is-hidden", !hasTracks);
   elements.sidebar.classList.toggle("is-hidden", !hasTracks);
-  elements.analyticsGrid.classList.toggle("is-hidden", !hasTracks);
+  elements.activityPanel.classList.toggle("is-hidden", !hasAnalytics);
+  elements.progressEmpty.classList.toggle("is-hidden", hasTracks);
+  elements.analyticsGrid.classList.toggle("is-hidden", !hasAnalytics);
   elements.workspaceGrid.classList.toggle("main-grid--solo", !hasTracks);
   elements.boardEmpty.classList.toggle("is-hidden", hasTracks);
   elements.tracksGrid.classList.toggle("is-hidden", !hasTracks);
@@ -2395,7 +2440,7 @@ function handleQuickCreate(event) {
   const track = makeTrack({
     title,
     category: kit.category,
-    mode: prefs.quickMode,
+    mode: kit.default_mode,
     why: kit.description,
     existingTrack: null,
   });
@@ -2689,7 +2734,7 @@ function deleteTrack(trackId) {
 
 function exportData() {
   const payload = {
-    app: "small-wins",
+    app: "momentum",
     exportedAt: new Date().toISOString(),
     state,
     prefs,
@@ -2698,7 +2743,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `small-wins-backup-${dayKey(new Date())}.json`;
+  link.download = `momentum-backup-${dayKey(new Date())}.json`;
   document.body.append(link);
   link.click();
   link.remove();
@@ -2749,6 +2794,16 @@ function handleThemeChange(event) {
   render();
 }
 
+function setView(view) {
+  if (!["today", "progress"].includes(view) || view === prefs.view) {
+    return;
+  }
+
+  prefs.view = view;
+  savePrefs();
+  render();
+}
+
 function handleQuoteStyleChange(event) {
   prefs.quoteStyle = ["general", "reflective", "bible"].includes(event.target.value)
     ? event.target.value
@@ -2761,7 +2816,7 @@ function toggleQuoteVisibility() {
   prefs.quoteVisible = !prefs.quoteVisible;
   savePrefs();
   renderDailyQuote();
-  renderToolsPanel();
+  renderSettingsPanel();
   showToast(t(prefs.quoteVisible ? "actions.quoteShown" : "actions.quoteHidden"));
 }
 
@@ -2781,6 +2836,17 @@ function applyTheme() {
   const themeColor = document.querySelector('meta[name="theme-color"]');
   if (themeColor) {
     themeColor.setAttribute("content", THEMES[prefs.theme].color);
+  }
+}
+
+function applyView() {
+  elements.todayView.classList.toggle("is-hidden", prefs.view !== "today");
+  elements.progressView.classList.toggle("is-hidden", prefs.view !== "progress");
+}
+
+function openSettingsDialog() {
+  if (!elements.settingsDialog.open) {
+    elements.settingsDialog.showModal();
   }
 }
 
@@ -3057,7 +3123,7 @@ function renderRing(progressPercent, label, note, color) {
   return `
     <div class="progress-ring tone-${escapeAttribute(color)}">
       <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="40" stroke="rgba(0, 0, 0, 0.08)"></circle>
+        <circle cx="50" cy="50" r="40" stroke="var(--ring-track)"></circle>
         <circle
           cx="50"
           cy="50"
@@ -3089,7 +3155,7 @@ function renderSparkline(values) {
 
   return `
     <svg class="sparkline" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
-      <path d="${area}" fill="rgba(201, 107, 71, 0.15)"></path>
+      <path d="${area}" fill="var(--accent-soft)"></path>
       <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>
   `;
@@ -3322,6 +3388,10 @@ function getText(path) {
     }
   }
   return cursor;
+}
+
+function shellText(key) {
+  return SHELL_TEXT[prefs.language]?.[key] || SHELL_TEXT.en[key] || "";
 }
 
 function uid(prefix) {
