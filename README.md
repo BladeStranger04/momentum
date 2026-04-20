@@ -82,7 +82,7 @@ momentum/
 |   +-- assets/
 |   `-- data/
 +-- scripts/
-+-- src/small_wins/
++-- src/momentum/
 +-- tests/
 +-- CONTRIBUTING.md
 +-- LICENSE

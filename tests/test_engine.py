@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from small_wins.engine import (
+from momentum.engine import (
     ActivityEntry,
     level_for_xp,
     momentum_score,

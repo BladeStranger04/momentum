@@ -22,4 +22,3 @@ __all__ = [
     "streak_length",
     "weekly_wins",
 ]
-

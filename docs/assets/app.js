@@ -1,5 +1,7 @@
-const STORAGE_KEY = "small-wins-state-v1";
-const PREFS_KEY = "small-wins-prefs-v1";
+const STORAGE_KEY = "momentum-state-v1";
+const PREFS_KEY = "momentum-prefs-v1";
+const LEGACY_STORAGE_KEY = "small-wins-state-v1";
+const LEGACY_PREFS_KEY = "small-wins-prefs-v1";
 const LEVEL_STEP = 120;
 const EFFORT_POINTS = { light: 1, steady: 2, deep: 3 };
 const XP_TABLE = {
@@ -1838,7 +1840,7 @@ function sanitizeTrack(track) {
 
 function loadState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = readStoredJson(STORAGE_KEY, LEGACY_STORAGE_KEY);
     return raw ? sanitizeState(JSON.parse(raw)) : createInitialState();
   } catch (error) {
     return createInitialState();
@@ -1851,7 +1853,7 @@ function saveState() {
 
 function loadPrefs() {
   try {
-    const raw = localStorage.getItem(PREFS_KEY);
+    const raw = readStoredJson(PREFS_KEY, LEGACY_PREFS_KEY);
     return sanitizePrefs(raw ? JSON.parse(raw) : null);
   } catch (error) {
     return createDefaultPrefs();
@@ -3486,6 +3488,19 @@ function getText(path) {
 
 function shellText(key) {
   return SHELL_TEXT[prefs.language]?.[key] || SHELL_TEXT.en[key] || "";
+}
+
+function readStoredJson(primaryKey, legacyKey) {
+  const primaryRaw = localStorage.getItem(primaryKey);
+  if (primaryRaw) {
+    return primaryRaw;
+  }
+
+  const legacyRaw = localStorage.getItem(legacyKey);
+  if (legacyRaw) {
+    localStorage.setItem(primaryKey, legacyRaw);
+  }
+  return legacyRaw;
 }
 
 function uid(prefix) {

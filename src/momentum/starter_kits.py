@@ -153,4 +153,3 @@ def starter_kit_payload() -> list[dict[str, object]]:
         item["suggested_steps"] = list(kit.suggested_steps)
         payload.append(item)
     return payload
-

@@ -72,4 +72,3 @@ def weekly_wins(entries: list[ActivityEntry], now: datetime, days: int = 7) -> l
         day = (now - timedelta(days=offset)).date()
         values.append(counts.get(day, 0))
     return values
-

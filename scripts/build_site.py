@@ -11,7 +11,7 @@ DATA = DOCS / "data"
 
 sys.path.insert(0, str(SRC))
 
-from small_wins import starter_kit_payload
+from momentum import starter_kit_payload
 
 
 def validate_docs() -> None:
@@ -42,4 +42,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
