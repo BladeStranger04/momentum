@@ -535,16 +535,16 @@ select:focus-visible {
 .today-rail {
   margin-top: 16px;
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.92fr);
+  grid-template-columns: minmax(260px, 0.94fr) minmax(300px, 1fr) minmax(280px, 0.96fr);
   gap: 18px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .start-panel {
   margin-top: 0;
-  padding: 20px 22px;
+  padding: 18px 20px;
   display: grid;
-  gap: 14px;
+  gap: 12px;
   background: var(--surface);
   box-shadow: var(--shadow-md);
 }
@@ -568,17 +568,21 @@ select:focus-visible {
 
 .start-panel__copy {
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 
 .start-panel__copy .section-kicker {
   margin-bottom: 0;
 }
 
+.section-kicker:empty {
+  display: none;
+}
+
 .start-panel__head h1 {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1.2;
   letter-spacing: -0.02em;
   font-weight: 800;
@@ -621,14 +625,14 @@ select:focus-visible {
 
 .start-options {
   display: grid;
-  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 
 .option-group {
   display: grid;
   gap: 10px;
-  padding: 12px;
+  padding: 11px 12px 12px;
   border-radius: 18px;
   border: 1px solid var(--line-soft);
   background: var(--surface-subtle);
@@ -642,6 +646,12 @@ select:focus-visible {
 
 .start-panel--compact .option-group--ideas {
   display: none;
+}
+
+.option-group--type .choice-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
 }
 
 .choice-row,
@@ -674,6 +684,11 @@ select:focus-visible {
   gap: 4px;
   text-align: left;
   box-shadow: none;
+}
+
+.option-group--type .choice-button {
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .choice-button strong {
@@ -881,7 +896,7 @@ select:focus-visible {
 .main-grid {
   margin-top: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.58fr) minmax(280px, 0.9fr);
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
@@ -898,22 +913,22 @@ select:focus-visible {
 }
 
 .board-panel {
-  background: linear-gradient(180deg, var(--surface-raised), var(--surface));
+  background: linear-gradient(180deg, var(--surface), var(--surface-raised));
+  box-shadow: var(--shadow-lg);
 }
 
 .board-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 110px;
-  background: radial-gradient(circle at top left, var(--accent-soft), transparent 62%);
-  pointer-events: none;
+  display: none;
 }
 
 .daily-panel,
 .feed-panel {
   background: linear-gradient(180deg, var(--surface), var(--surface-subtle));
   box-shadow: var(--shadow-md);
+}
+
+.daily-panel--rail {
+  height: 100%;
 }
 
 .chart-panel,
@@ -966,20 +981,20 @@ select:focus-visible {
 .tracks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 
 .track-card {
   --track-accent: var(--accent);
   position: relative;
   isolation: isolate;
-  padding: 22px;
+  padding: 20px;
   border-radius: 26px;
   border: 1px solid var(--line-soft);
-  background: linear-gradient(180deg, var(--surface-strong), var(--surface-subtle));
+  background: linear-gradient(180deg, var(--surface-strong), var(--surface));
   box-shadow: var(--shadow-md);
   display: grid;
-  gap: 18px;
+  gap: 16px;
   transition:
     transform var(--transition),
     box-shadow var(--transition),
@@ -990,9 +1005,9 @@ select:focus-visible {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 92px;
+  height: 72px;
   background: linear-gradient(180deg, var(--accent-soft), transparent);
-  opacity: 0.72;
+  opacity: 0.42;
   z-index: -2;
 }
 
@@ -1072,7 +1087,8 @@ select:focus-visible {
 .track-card__actions {
   justify-content: flex-end;
   align-items: center;
-  opacity: 0.84;
+  gap: 6px;
+  opacity: 0.72;
 }
 
 .track-badge,
@@ -1103,10 +1119,10 @@ select:focus-visible {
 
 .chip-action {
   border-radius: 999px;
-  padding: 7px 9px;
-  font-size: 0.74rem;
+  padding: 6px 8px;
+  font-size: 0.72rem;
   font-weight: 800;
-  background: var(--surface);
+  background: transparent;
   color: var(--text-soft);
   border-color: var(--line-soft);
   box-shadow: none;
@@ -1156,7 +1172,7 @@ select:focus-visible {
   padding: 15px 16px;
   border-radius: 20px;
   border: 1px solid var(--line-soft);
-  background: var(--surface-raised);
+  background: linear-gradient(180deg, var(--surface-raised), var(--surface-subtle));
   box-shadow:
     inset 3px 0 0 var(--track-accent),
     var(--shadow-sm);
@@ -1187,6 +1203,7 @@ select:focus-visible {
   font-size: 0.76rem;
   font-weight: 800;
   color: var(--track-accent);
+  white-space: nowrap;
 }
 
 .track-card__next strong {
@@ -1201,11 +1218,11 @@ select:focus-visible {
 
 .track-progress {
   display: grid;
-  gap: 14px;
-  padding: 16px;
+  gap: 12px;
+  padding: 15px;
   border-radius: 20px;
   border: 1px solid var(--line);
-  background: var(--surface-raised);
+  background: linear-gradient(180deg, var(--surface-raised), var(--surface-subtle));
 }
 
 .track-progress__head {
@@ -1298,7 +1315,7 @@ select:focus-visible {
 
 .move-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .move-list__head {
@@ -1412,6 +1429,7 @@ select:focus-visible {
 .activity-row__copy {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .micro-card__copy strong,
@@ -1424,6 +1442,21 @@ select:focus-visible {
 .activity-row__copy span {
   font-size: 0.82rem;
   color: var(--text-soft);
+}
+
+.activity-row__xp {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.progress-feed-panel {
+  margin-top: 18px;
+}
+
+.progress-feed-panel .activity-row__copy strong {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--line);
 }
 
 .pill-button {
@@ -1882,6 +1915,10 @@ select:focus-visible {
   .track-card__tags {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .option-group--type .choice-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .micro-card,

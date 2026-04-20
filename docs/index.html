@@ -43,8 +43,8 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     >
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260420-1">
-    <link rel="stylesheet" href="assets/site.css?v=20260420-1">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260420-3">
+    <link rel="stylesheet" href="assets/site.css?v=20260420-3">
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
@@ -96,7 +96,7 @@
               </div>
 
               <div class="start-options">
-                <section class="option-group">
+                <section class="option-group option-group--type">
                   <div class="option-group__head">
                     <span id="quickCategoryLabel"></span>
                   </div>
@@ -123,6 +123,17 @@
               <p class="quote-card__source" id="quoteSource"></p>
             </article>
           </section>
+
+          <section class="panel daily-panel daily-panel--rail">
+            <div class="section-heading section-heading--tight">
+              <div>
+                <p class="section-kicker" id="dailyKicker"></p>
+                <h2 id="dailyTitle"></h2>
+              </div>
+            </div>
+            <div class="daily-brief" id="dailyBrief"></div>
+            <div class="micro-list" id="dailyList"></div>
+          </section>
         </section>
 
         <section class="main-grid" id="workspaceGrid">
@@ -141,28 +152,7 @@
             <div class="tracks-grid" id="tracksGrid"></div>
           </section>
 
-          <aside class="sidebar" id="sidebar">
-            <section class="panel daily-panel">
-              <div class="section-heading section-heading--tight">
-                <div>
-                  <p class="section-kicker" id="dailyKicker"></p>
-                  <h2 id="dailyTitle"></h2>
-                </div>
-              </div>
-              <div class="daily-brief" id="dailyBrief"></div>
-              <div class="micro-list" id="dailyList"></div>
-            </section>
-
-            <section class="panel feed-panel" id="activityPanel">
-              <div class="section-heading section-heading--tight">
-                <div>
-                  <p class="section-kicker" id="activityKicker"></p>
-                  <h2 id="activityTitle"></h2>
-                </div>
-              </div>
-              <div class="activity-feed" id="activityFeed"></div>
-            </section>
-          </aside>
+          <aside class="sidebar is-hidden" id="sidebar"></aside>
         </section>
       </section>
 
@@ -209,6 +199,16 @@
             </div>
             <div id="heatmapChart" class="chart-host"></div>
           </section>
+        </section>
+
+        <section class="panel feed-panel progress-feed-panel is-hidden" id="activityPanel">
+          <div class="section-heading section-heading--tight">
+            <div>
+              <p class="section-kicker" id="activityKicker"></p>
+              <h2 id="activityTitle"></h2>
+            </div>
+          </div>
+          <div class="activity-feed" id="activityFeed"></div>
         </section>
       </section>
     </main>
@@ -344,6 +344,6 @@
 
     <div class="toast" id="feedbackToast" aria-live="polite"></div>
 
-    <script type="module" src="assets/app.js?v=20260420-1"></script>
+    <script type="module" src="assets/app.js?v=20260420-3"></script>
   </body>
 </html>

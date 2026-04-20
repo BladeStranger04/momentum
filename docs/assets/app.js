@@ -1953,7 +1953,7 @@ function renderStartPanel() {
   const hasTracks = state.tracks.length > 0;
   const ideas = hasTracks ? kit.ideas.slice(0, 2) : kit.ideas;
 
-  elements.startKicker.textContent = t("start.kicker");
+  elements.startKicker.textContent = "";
   elements.startTitle.textContent = t("start.title");
   elements.quickInputLabel.textContent = t("start.inputLabel");
   elements.quickCategoryLabel.textContent = t("start.categoryLabel");
@@ -2173,7 +2173,7 @@ function renderMoveRows(track, featuredStepId = null) {
     const completedIds = completedStepIdsForTrack(track);
     const openRows = track.steps
       .filter((step) => !completedIds.has(step.id) && step.id !== hiddenFeaturedId)
-      .slice(0, 2)
+      .slice(0, 1)
       .map((step) => renderOpenMove(track, step));
     const doneRows = track.steps
       .filter((step) => completedIds.has(step.id))
@@ -2208,7 +2208,7 @@ function renderMoveRows(track, featuredStepId = null) {
         return EFFORT_POINTS[left.effort] - EFFORT_POINTS[right.effort];
       })
       .filter((step) => step.id !== hiddenFeaturedId)
-      .slice(0, 2)
+      .slice(0, 1)
       .map((step) => renderRepeatableMove(track, step, counts[step.id] || 0));
 
   return rows.join("");
@@ -2276,11 +2276,8 @@ function renderDailyPanel() {
   elements.dailyKicker.textContent = t("daily.kicker");
   elements.dailyTitle.textContent = t("daily.title");
 
-  const brief = buildDailyBrief();
-  elements.dailyBrief.innerHTML = `
-    <strong>${escapeHtml(brief.headline)}</strong>
-    <p>${escapeHtml(brief.body)}</p>
-  `;
+  elements.dailyBrief.innerHTML = "";
+  elements.dailyBrief.classList.add("is-hidden");
 
   const nextMoves = suggestedNextMoves();
   if (!nextMoves.length) {
@@ -2324,7 +2321,7 @@ function renderActivityFeed() {
     .map((entry) => {
       const track = state.tracks.find((item) => item.id === entry.trackId);
       return `
-        <div class="activity-row">
+        <div class="activity-row activity-row--done">
           <div class="activity-row__copy">
             <strong>${escapeHtml(entry.title)}</strong>
             <span>${escapeHtml(`${track?.title || ""} · ${formatRelativeTime(entry.completedAt)}`)}</span>
@@ -2520,13 +2517,13 @@ function renderDialogChrome() {
 function toggleLayoutState() {
   const hasTracks = state.tracks.length > 0;
   const hasAnalytics = state.activity.length > 0;
-  const hasRecentActivity = state.activity.length > 2;
+  const hasRecentActivity = state.activity.length > 0;
   elements.summaryRow.classList.toggle("is-hidden", !hasTracks);
-  elements.sidebar.classList.toggle("is-hidden", !hasTracks);
+  elements.sidebar.classList.add("is-hidden");
   elements.activityPanel.classList.toggle("is-hidden", !hasRecentActivity);
   elements.progressEmpty.classList.toggle("is-hidden", hasTracks);
   elements.analyticsGrid.classList.toggle("is-hidden", !hasAnalytics);
-  elements.workspaceGrid.classList.toggle("main-grid--solo", !hasTracks);
+  elements.workspaceGrid.classList.add("main-grid--solo");
   elements.boardEmpty.classList.toggle("is-hidden", hasTracks);
   elements.tracksGrid.classList.toggle("is-hidden", !hasTracks);
 }
