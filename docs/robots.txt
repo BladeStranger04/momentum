@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bladestranger04.github.io/momentum/sitemap.xml

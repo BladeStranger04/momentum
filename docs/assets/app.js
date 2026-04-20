@@ -75,7 +75,9 @@ const FALLBACK_STARTER_KITS = [
 ];
 const UI_TEXT = {
   en: {
-    metaDescription: "A calm app for turning avoided work into lighter, clearer progress.",
+    metaTitle: "Momentum — gamified anti-procrastination tracker",
+    metaDescription:
+      "Momentum helps users turn tasks, habits, and routines into a calmer, more motivating progress system with daily reflection and visual progress tracking.",
     topbar: {
       theme: "Theme",
     },
@@ -275,7 +277,9 @@ const UI_TEXT = {
     },
   },
   ru: {
-    metaDescription: "Спокойное приложение, которое превращает тяжёлые дела в более ясный и посильный прогресс.",
+    metaTitle: "Momentum — трекер прогресса против прокрастинации",
+    metaDescription:
+      "Momentum помогает превращать задачи, привычки и рутины в более спокойную и поддерживающую систему прогресса с ежедневной рефлексией и наглядным движением вперёд.",
     topbar: {
       theme: "Тема",
     },
@@ -1901,7 +1905,7 @@ function render() {
 
 function renderChrome() {
   document.documentElement.lang = prefs.language;
-  document.title = "Momentum";
+  document.title = t("metaTitle");
   const description = document.querySelector('meta[name="description"]');
   if (description) {
     description.setAttribute("content", t("metaDescription"));
@@ -2127,7 +2131,7 @@ function renderTrackCard(track) {
             <strong class="track-progress__value">${escapeHtml(stats.progressLabel)}</strong>
             <span class="track-progress__meta">${escapeHtml(stats.nextMilestoneLabel)}</span>
           </div>
-          ${renderRing(stats.progressPercent, `${Math.round(stats.progressPercent)}%`, modeLabel, track.color)}
+          ${renderRing(stats.progressPercent, `${Math.round(stats.progressPercent)}%`, track.color)}
         </div>
         <div class="progress-bar"><span style="width: ${stats.progressPercent}%"></span></div>
         <div class="track-meta">
@@ -3211,7 +3215,7 @@ function preferredBibleQuoteCategories() {
   ];
 }
 
-function renderRing(progressPercent, label, note, color) {
+function renderRing(progressPercent, label, color) {
   const circumference = 2 * Math.PI * 40;
   const dash = (progressPercent / 100) * circumference;
   return `
@@ -3229,7 +3233,6 @@ function renderRing(progressPercent, label, note, color) {
       </svg>
       <div class="ring-copy">
         <strong>${escapeHtml(label)}</strong>
-        <span>${escapeHtml(note)}</span>
       </div>
     </div>
   `;

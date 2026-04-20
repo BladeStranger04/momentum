@@ -4,7 +4,9 @@ Momentum is a static, supportive progress app for people who procrastinate on wo
 
 Instead of treating everything like a rigid to-do list, it turns goals into lighter tracks with repeatable moves, momentum, milestones, XP, and visual feedback. The point is not to gamify life for its own sake. The point is to make starting easier, progress clearer, and returning after a gap feel normal instead of shameful.
 
-[Live demo](https://bladestranger04.github.io/small-wins/)
+[Live demo](https://bladestranger04.github.io/momentum/)
+
+[Repository](https://github.com/BladeStranger04/momentum)
 
 ## Why this exists
 
@@ -68,11 +70,12 @@ The repository is set up for GitHub Pages via GitHub Actions:
 Repository setting required once:
 
 - `Settings -> Pages -> Source -> GitHub Actions`
+- replace `GOOGLE_SEARCH_CONSOLE_VERIFICATION_CODE` in `docs/index.html` when setting up Google Search Console
 
 ## Project structure
 
 ```text
-small-wins/
+momentum/
 +-- .github/workflows/pages.yml
 +-- docs/
 |   +-- assets/
