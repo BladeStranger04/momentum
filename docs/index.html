@@ -44,7 +44,7 @@
       rel="stylesheet"
     >
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=20260420-3">
-    <link rel="stylesheet" href="assets/site.css?v=20260420-3">
+    <link rel="stylesheet" href="assets/site.css?v=20260420-4">
   </head>
   <body>
     <div class="page-glow" aria-hidden="true"></div>
@@ -94,6 +94,9 @@
                 </label>
                 <button class="button button--primary" id="quickCreateButton" type="submit"></button>
               </div>
+              <div class="quick-actions quick-actions--start">
+                <button class="button button--secondary" id="quickCustomizeButton" type="button"></button>
+              </div>
 
               <div class="start-options">
                 <section class="option-group option-group--type">
@@ -113,27 +116,27 @@
             </form>
           </section>
 
-          <section class="quote-row" id="quoteSection">
-            <article class="panel quote-card">
-              <div class="quote-card__head">
-                <p class="section-kicker" id="quoteKicker"></p>
-                <button class="quiet-button" id="hideQuoteButton" type="button"></button>
-              </div>
-              <blockquote class="quote-card__text" id="quoteText"></blockquote>
-              <p class="quote-card__source" id="quoteSource"></p>
-            </article>
-          </section>
-
           <section class="panel daily-panel daily-panel--rail">
             <div class="section-heading section-heading--tight">
               <div>
                 <p class="section-kicker" id="dailyKicker"></p>
-                <h2 id="dailyTitle"></h2>
+              <h2 id="dailyTitle"></h2>
               </div>
             </div>
             <div class="daily-brief" id="dailyBrief"></div>
             <div class="micro-list" id="dailyList"></div>
           </section>
+        </section>
+
+        <section class="quote-row" id="quoteSection">
+          <article class="panel quote-card">
+            <div class="quote-card__head">
+              <p class="section-kicker" id="quoteKicker"></p>
+              <button class="quiet-button" id="hideQuoteButton" type="button"></button>
+            </div>
+            <blockquote class="quote-card__text" id="quoteText"></blockquote>
+            <p class="quote-card__source" id="quoteSource"></p>
+          </article>
         </section>
 
         <section class="main-grid" id="workspaceGrid">

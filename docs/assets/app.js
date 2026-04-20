@@ -3,6 +3,7 @@ const PREFS_KEY = "momentum-prefs-v1";
 const LEGACY_STORAGE_KEY = "small-wins-state-v1";
 const LEGACY_PREFS_KEY = "small-wins-prefs-v1";
 const LEVEL_STEP = 120;
+const BOARD_MOVE_PREVIEW_LIMIT = 2;
 const EFFORT_POINTS = { light: 1, steady: 2, deep: 3 };
 const XP_TABLE = {
   focus: { light: 12, steady: 20, deep: 32 },
@@ -523,16 +524,30 @@ Object.assign(UI_TEXT.ru.modes.focus, { label: "Сессии", note: "Повто
 Object.assign(UI_TEXT.ru.modes.momentum, { label: "Рутина", note: "Спокойный ритм" });
 Object.assign(UI_TEXT.ru.modes.milestone, { label: "Чеклист", note: "Пошаговая работа" });
 Object.assign(UI_TEXT.en.board, {
+  kicker: "",
   title: "Board",
   add: "Add track",
   emptyTitle: "No tracks yet.",
   emptyBody: "Start one track to give the board shape.",
 });
 Object.assign(UI_TEXT.ru.board, {
+  kicker: "",
   title: "Доска",
   add: "Добавить трек",
   emptyTitle: "Пока нет треков.",
   emptyBody: "Начните с одного трека, и доска сразу станет полезной.",
+});
+Object.assign(UI_TEXT.en.actions, {
+  more: "More",
+});
+Object.assign(UI_TEXT.ru.actions, {
+  more: "Ещё",
+});
+Object.assign(UI_TEXT.en.start, {
+  customize: "Customize track",
+});
+Object.assign(UI_TEXT.ru.start, {
+  customize: "РќР°СЃС‚СЂРѕРёС‚СЊ С‚СЂРµРє",
 });
 Object.assign(UI_TEXT.en.dialog, {
   modeLegend: "Style",
@@ -1562,6 +1577,7 @@ function bindElements() {
     quickCategoryRow: document.getElementById("quickCategoryRow"),
     quickSuggestionRow: document.getElementById("quickSuggestionRow"),
     quickCreateButton: document.getElementById("quickCreateButton"),
+    quickCustomizeButton: document.getElementById("quickCustomizeButton"),
     quickStartForm: document.getElementById("quickStartForm"),
     loadDemoButton: document.getElementById("loadDemoButton"),
     quoteSection: document.getElementById("quoteSection"),
@@ -1658,6 +1674,7 @@ function bindElements() {
 
 function bindEvents() {
   elements.quickStartForm.addEventListener("submit", handleQuickCreate);
+  elements.quickCustomizeButton.addEventListener("click", handleQuickCustomize);
   elements.loadDemoButton.addEventListener("click", loadDemoState);
   elements.newTrackButton.addEventListener("click", () => openTrackDialog(!state.tracks.length));
   elements.themeSelect.addEventListener("change", handleThemeChange);
@@ -1961,6 +1978,7 @@ function renderStartPanel() {
   elements.quickCategoryLabel.textContent = t("start.categoryLabel");
   elements.quickSuggestionLabel.textContent = t("start.suggestionLabel");
   elements.quickCreateButton.textContent = t("start.create");
+  elements.quickCustomizeButton.textContent = t("start.customize");
   elements.loadDemoButton.textContent = t("start.demo");
   elements.quickTrackTitle.placeholder = kit.prompt;
   elements.quickTrackTitle.setAttribute("aria-label", t("start.inputLabel"));
@@ -2093,6 +2111,7 @@ function renderTrackCard(track) {
   const nextNote = nextStep
     ? `+${XP_TABLE[track.mode][nextStep.effort]} ${t("track.xp")}`
     : stats.nextMilestoneLabel;
+  const progressPercentLabel = `${Math.round(stats.progressPercent)}%`;
   const nextAction = nextStep
     ? `
         <button
@@ -2114,32 +2133,12 @@ function renderTrackCard(track) {
             <span class="track-badge">${escapeHtml(categoryLabel)}</span>
             <span class="track-chip">${escapeHtml(modeLabel)}</span>
           </div>
-          <div class="track-card__title-row">
+          <div class="track-card__heading">
             <h3>${escapeHtml(track.title)}</h3>
-            <div class="track-card__actions">
-              <button class="chip-action" type="button" data-edit-track="${track.id}">${escapeHtml(t("actions.edit"))}</button>
-              <button class="chip-action chip-action--danger" type="button" data-delete-track="${track.id}">${escapeHtml(
-                t("actions.remove"),
-              )}</button>
-            </div>
+            ${track.why ? `<p class="track-card__why">${escapeHtml(track.why)}</p>` : ""}
           </div>
-          ${track.why ? `<p class="track-card__why">${escapeHtml(track.why)}</p>` : ""}
         </div>
-      </div>
-
-      <div class="track-progress">
-        <div class="track-progress__head">
-          <div class="track-progress__text">
-            <strong class="track-progress__value">${escapeHtml(stats.progressLabel)}</strong>
-            <span class="track-progress__meta">${escapeHtml(stats.nextMilestoneLabel)}</span>
-          </div>
-          ${renderRing(stats.progressPercent, `${Math.round(stats.progressPercent)}%`, track.color)}
-        </div>
-        <div class="progress-bar"><span style="width: ${stats.progressPercent}%"></span></div>
-        <div class="track-meta">
-          <span>+${stats.totalXp} ${escapeHtml(t("track.xp"))}</span>
-          <span>${escapeHtml(stats.runLabel)}</span>
-        </div>
+        ${renderTrackMenu(track.id)}
       </div>
 
       <div class="track-card__next">
@@ -2153,6 +2152,21 @@ function renderTrackCard(track) {
         ${nextAction}
       </div>
 
+      <div class="track-progress">
+        <div class="track-progress__head">
+          <div class="track-progress__text">
+            <strong class="track-progress__value">${escapeHtml(stats.progressLabel)}</strong>
+            <span class="track-progress__meta">${escapeHtml(stats.nextMilestoneLabel)}</span>
+          </div>
+          <span class="track-progress__pill">${escapeHtml(progressPercentLabel)}</span>
+        </div>
+        <div class="progress-bar"><span style="width: ${stats.progressPercent}%"></span></div>
+        <div class="track-meta">
+          <span>+${stats.totalXp} ${escapeHtml(t("track.xp"))}</span>
+          <span>${escapeHtml(stats.runLabel)}</span>
+        </div>
+      </div>
+
       <section class="move-list">
         <div class="move-list__head">
           <h4>${escapeHtml(t("track.moveList"))}</h4>
@@ -2161,6 +2175,23 @@ function renderTrackCard(track) {
         ${renderMoveRows(track, nextStep?.id || null)}
       </section>
     </article>
+  `;
+}
+
+function renderTrackMenu(trackId) {
+  const moreLabel = t("actions.more");
+  return `
+    <details class="track-menu">
+      <summary class="track-menu__trigger" aria-label="${escapeAttribute(moreLabel)}" title="${escapeAttribute(moreLabel)}">
+        <span aria-hidden="true">...</span>
+      </summary>
+      <div class="track-menu__panel">
+        <button class="track-menu__action" type="button" data-edit-track="${trackId}">${escapeHtml(t("actions.edit"))}</button>
+        <button class="track-menu__action track-menu__action--danger" type="button" data-delete-track="${trackId}">${escapeHtml(
+          t("actions.remove"),
+        )}</button>
+      </div>
+    </details>
   `;
 }
 
@@ -2175,15 +2206,11 @@ function renderMoveRows(track, featuredStepId = null) {
     const completedIds = completedStepIdsForTrack(track);
     const openRows = track.steps
       .filter((step) => !completedIds.has(step.id) && step.id !== hiddenFeaturedId)
-      .slice(0, 1)
+      .slice(0, BOARD_MOVE_PREVIEW_LIMIT)
       .map((step) => renderOpenMove(track, step));
-    const doneRows = track.steps
-      .filter((step) => completedIds.has(step.id))
-      .slice(0, 1)
-      .map((step) => renderDoneMove(track, step));
 
     if (!openRows.length) {
-      openRows.push(`
+      return `
         <div class="move-row is-done">
           <div class="move-button">
             <span class="move-title">${escapeHtml(t("track.targetReached"))}</span>
@@ -2193,10 +2220,10 @@ function renderMoveRows(track, featuredStepId = null) {
             </span>
           </div>
         </div>
-      `);
+      `;
     }
 
-    return [...openRows, ...doneRows].join("");
+    return openRows.join("");
   }
 
   const counts = countCompletionsByStep(track.id);
@@ -2210,7 +2237,7 @@ function renderMoveRows(track, featuredStepId = null) {
         return EFFORT_POINTS[left.effort] - EFFORT_POINTS[right.effort];
       })
       .filter((step) => step.id !== hiddenFeaturedId)
-      .slice(0, 1)
+      .slice(0, BOARD_MOVE_PREVIEW_LIMIT)
       .map((step) => renderRepeatableMove(track, step, counts[step.id] || 0));
 
   return rows.join("");
@@ -2232,20 +2259,6 @@ function renderOpenMove(track, step) {
           <span class="move-pill">${escapeHtml(t("daily.log"))}</span>
         </span>
       </button>
-    </div>
-  `;
-}
-
-function renderDoneMove(track, step) {
-  return `
-    <div class="move-row is-done">
-      <div class="move-button">
-        <span class="move-title">${escapeHtml(step.title)}</span>
-        <span class="move-meta">
-          <span>${escapeHtml(t("track.completed"))}</span>
-          <span class="move-pill">${escapeHtml(formatShortDate(step.doneAt))}</span>
-        </span>
-      </div>
     </div>
   `;
 }
@@ -2550,7 +2563,12 @@ function handleQuickCreate(event) {
   showToast(t("actions.trackCreated"));
 }
 
-function openTrackDialog(isFirstTrack = false, category = null, track = null) {
+function handleQuickCustomize() {
+  const draftTitle = elements.quickTrackTitle.value.trim();
+  openTrackDialog(!state.tracks.length, prefs.quickCategory, null, draftTitle);
+}
+
+function openTrackDialog(isFirstTrack = false, category = null, track = null, draftTitle = "") {
   const selectedKit = localizedKit(category || track?.category || prefs.quickCategory);
   elements.trackForm.reset();
   elements.trackId.value = track?.id || "";
@@ -2565,7 +2583,7 @@ function openTrackDialog(isFirstTrack = false, category = null, track = null) {
     elements.trackWhy.value = track.why;
     elements.stepList.value = track.steps.map((step) => step.title).join("\n");
   } else {
-    elements.trackTitle.value = "";
+    elements.trackTitle.value = draftTitle || "";
     elements.trackWhy.value = selectedKit.description;
     elements.stepList.value = deriveSuggestedStepText(selectedKit, selectedMode());
     elements.targetValue.value = sanitizeTargetValue(selectedKit.target_value, selectedMode(), buildSteps("", selectedMode(), selectedKit), selectedKit.target_value);
@@ -3212,29 +3230,6 @@ function preferredBibleQuoteCategories() {
     categories[(start + 1) % categories.length],
     categories[(start + 2) % categories.length],
   ];
-}
-
-function renderRing(progressPercent, label, color) {
-  const circumference = 2 * Math.PI * 40;
-  const dash = (progressPercent / 100) * circumference;
-  return `
-    <div class="progress-ring tone-${escapeAttribute(color)}">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="40" stroke="var(--ring-track)"></circle>
-        <circle
-          cx="50"
-          cy="50"
-          r="40"
-          stroke="var(--track-accent)"
-          stroke-linecap="round"
-          stroke-dasharray="${dash} ${circumference}"
-        ></circle>
-      </svg>
-      <div class="ring-copy">
-        <strong>${escapeHtml(label)}</strong>
-      </div>
-    </div>
-  `;
 }
 
 function renderSparkline(values) {
